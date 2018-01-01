@@ -444,7 +444,7 @@ number_of_days_after_experiment_to_allow <- 14
 p_value_traffic <- traffic %>%
     mutate(day_converted = ifelse(converted, day_entered_experiment + conversion_offset, NA))# %>%
 
-num_days_people_are_still_converting <- max(p_value_traffic$day_entered_experiment) + max(p_value_traffic$conversion_offset)
+num_days_people_are_still_converting <- max(p_value_traffic$day_converted, na.rm = TRUE)
 experiment <- data.frame(experiment_day = NULL, variation=NULL, conversions = NULL, trials = NULL)
 
 for(ex_day in 1:num_days_people_are_still_converting) {
@@ -473,7 +473,7 @@ experiment %>%
         scale_y_continuous(breaks = seq(0, 1, 0.05),
                            labels = percent_format()) +
         expand_limits(y=c(0,0.12)) +
-        scale_x_continuous(breaks = seq(0, 200, 5)) +
+        scale_x_continuous(breaks = c(1, seq(5, 200, 5))) +
         scale_color_manual(values = c("A" = "#FF9500", "B" = "#19A6FF")) +
         labs(title='Conversion rate over time - No Attribution Window',
          subtitle='Orange Dashed Line Represents End of Experiment at 60 days.\nPurple Dashed Line Represents End of Experiment at 90 Days.',
@@ -538,7 +538,7 @@ cumulative_experiment %>%
         geom_point() +
         geom_text(aes(label=round(p_value, 3)), vjust=-0.5, check_overlap = TRUE) +
         geom_hline(yintercept = 0.05, color ='red', alpha=0.5, size=1.5) +
-        scale_x_continuous(breaks = seq(1, 200, 5)) +
+        scale_x_continuous(breaks = c(1, seq(5, 200, 5))) +
         scale_y_continuous(breaks = seq(0, 1, 0.05)) +
         expand_limits(y=c(0,1)) +
         geom_vline(xintercept = actual_experiment_duration, color='orange', alpha=0.5, linetype="dashed", size=1.5) + 
@@ -575,7 +575,7 @@ cumulative_experiment %>%
         geom_line() +
         coord_cartesian(ylim=c(-0.10, 0.3)) +
         scale_y_continuous(labels = percent_format()) +
-        scale_x_continuous(breaks = seq(1, 200, 5)) +
+        scale_x_continuous(breaks = c(1, seq(5, 200, 5))) +
         geom_ribbon(aes(ymin = conf_low, ymax = conf_high), fill = 'green', alpha=0.15) +
         geom_ribbon(aes(ymin = ifelse(conf_low <= 0, conf_low, NA), ymax = ifelse(conf_low <= 0, conf_high, NA)), fill = 'red', alpha=0.45) +
         geom_ribbon(aes(ymin = ifelse(conf_low > 0, conf_low, NA), ymax = ifelse(conf_low > 0, conf_high, NA)), fill = 'green', alpha=0.2) +
@@ -651,7 +651,7 @@ Now, `B`'s conversion rate is only ``r percent(b_conversion_rate)`` because we a
 p_value_traffic <- traffic %>%
     mutate(day_converted_within_window = ifelse(converted_within_window, day_entered_experiment + conversion_offset, NA))
 
-num_days_people_are_still_converting <- max(p_value_traffic$day_entered_experiment) + max(p_value_traffic$conversion_offset) + attribution_window_days
+num_days_people_are_still_converting <- max(p_value_traffic$day_converted, na.rm = TRUE)
 experiment <- data.frame(experiment_day = NULL, variation=NULL, conversions = NULL, trials = NULL)
 
 for(ex_day in 1:num_days_people_are_still_converting) {
@@ -682,7 +682,7 @@ experiment %>%
         scale_y_continuous(breaks = seq(0, 1, 0.05),
                            labels = percent_format()) +
         expand_limits(y=c(0,0.12)) +
-        scale_x_continuous(breaks = seq(0, 200, 5)) +
+        scale_x_continuous(breaks = c(1, seq(5, 200, 5))) +
         scale_color_manual(values = c("A" = "#FF9500", "B" = "#19A6FF")) +
         labs(title='Conversion rate over time - With Attribution Window',
          subtitle='Orange Dashed Line Represents End of Experiment at 60 days.\nPurple Dashed Line Represents End of Experiment at 90 Days.',
@@ -747,7 +747,7 @@ cumulative_experiment %>%
         geom_point() +
         geom_text(aes(label=round(p_value, 3)), vjust=-0.5, check_overlap = TRUE) +
         geom_hline(yintercept = 0.05, color ='red', alpha=0.5, size=1.5) +
-        scale_x_continuous(breaks = seq(1, 200, 5)) +
+        scale_x_continuous(breaks = c(1, seq(5, 200, 5))) +
         scale_y_continuous(breaks = seq(0, 1, 0.05)) +
         expand_limits(y=c(0,1)) +
         geom_vline(xintercept = actual_experiment_duration, color='orange', alpha=0.5, linetype="dashed", size=1.5) + 
@@ -768,7 +768,7 @@ cumulative_experiment %>%
         geom_line() +
         coord_cartesian(ylim=c(-0.10, 0.3)) +
         scale_y_continuous(labels = percent_format()) +
-        scale_x_continuous(breaks = seq(1, 200, 5)) +
+        scale_x_continuous(breaks = c(1, seq(5, 200, 5))) +
         geom_ribbon(aes(ymin = conf_low, ymax = conf_high), fill = 'green', alpha=0.15) +
         geom_ribbon(aes(ymin = ifelse(conf_low <= 0, conf_low, NA), ymax = ifelse(conf_low <= 0, conf_high, NA)), fill = 'red', alpha=0.45) +
         geom_ribbon(aes(ymin = ifelse(conf_low > 0, conf_low, NA), ymax = ifelse(conf_low > 0, conf_high, NA)), fill = 'green', alpha=0.2) +
