@@ -196,9 +196,11 @@ traffic$conversion_offset <- map_dbl(traffic$conversion_offset, ~ {
 })
 
 traffic %>%
-    filter(converted) %>%
-    ggplot(aes(x=conversion_offset)) +
-    geom_histogram(binwidth = 1) +
+    group_by(conversion_offset, variation) %>%
+    summarise(num_trials=n(),
+              average_conversion_rate = mean(conversion_rate)) %>%
+    ggplot(aes(x=conversion_offset, y=num_trials, fill=average_conversion_rate)) +
+    geom_col() +
     scale_x_continuous(breaks = seq(0, 100)) +
     facet_wrap(~variation, nrow=2) +
     labs(title='Simualted Distribution of Days from Entering Experiment to Conversion.',
