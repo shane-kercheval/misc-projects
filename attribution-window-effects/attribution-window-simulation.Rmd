@@ -87,18 +87,18 @@ traffic %>%
 ```
 
 ```{r }
-simualted_percent_increase_in_b <- 0.05
+simulated_percent_increase_in_b <- 0.05
 ```
 
 P-value of above conversions: ``r prop.test(x=conversions, n=trials)$p.value``
 
 What we've done so far has simulated an experiment in which there was **no** change in the `A` group vs the `B` group. It was an experiment that might as well been an `A`/`A` test.
 
-Now, let's simulate everyone in the `B` having a ``r percent(simualted_percent_increase_in_b)`` increase (due from the affects of the new thing we are testing out.)
+Now, let's simulate everyone in the `B` having a ``r percent(simulated_percent_increase_in_b)`` increase (due from the affects of the new thing we are testing out.)
 
 ```{r}
 traffic <- traffic %>%
-    mutate(lift = ifelse(variation == 'A', 0, simualted_percent_increase_in_b)) %>%
+    mutate(lift = ifelse(variation == 'A', 0, simulated_percent_increase_in_b)) %>%
     mutate(conversion_rate = baseline_conversion_rate + (baseline_conversion_rate * lift)) %>%
     select(-converted)
 
@@ -130,7 +130,7 @@ traffic %>%
     geom_text(aes(label=percent_format()(conversion_rate)),
               position = position_dodge(width=0.9),
               vjust = -0.4) +
-    labs(title='Simulated 20% Baseline Conversion Rate from Binomial Distribution, with 10% increase from effects of B variation.',
+    labs(title=paste('Simulated', percent(baseline_conversion_rate),'Baseline Conversion Rate from Binomial Distribution, with', percent(simulated_percent_increase_in_b),'increase from effects of B variation.'),
          y='Trials',
          x='Variation',
          fill='Converted') +
@@ -257,7 +257,7 @@ traffic %>%
     geom_text(aes(label=percent_format()(conversion_rate)),
               position = position_dodge(width=0.9),
               vjust = -0.4) +
-    labs(title='Simulated 20% Baseline Conversion Rate from Binomial Distribution, with 10% increase from effects of B variation.',
+    labs(title=paste('Simulated', percent(baseline_conversion_rate),'Baseline Conversion Rate from Binomial Distribution, with', percent(simulated_percent_increase_in_b),'increase from effects of B variation.'),
          y='Trials',
          x='Variation',
          fill='Converted') +
