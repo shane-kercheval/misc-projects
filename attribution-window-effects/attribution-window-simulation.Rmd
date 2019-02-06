@@ -1,0 +1,336 @@
+---
+title: "README"
+author: "Shane Kercheval"
+output:
+    md_document:
+    variant: markdown_github
+toc: true
+toc_depth: 4
+---
+    
+```{r setup, echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(knitr)
+library(tidyverse)
+library(lubridate)
+library(scales)
+options(scipen=999) # non-scientific notation
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# What affects does using (or not using) an attribution window have on A/B Testing?
+
+
+- Create 20K trials in experiment, roughly 10K per randomized variation.
+- We'll randomly assign people into an `A` group or `B` group based on a random number generator 0/1
+
+```{r create_traffic}
+num_trials <- 20000
+set.seed(1)
+traffic <- data.frame(id=sample(1:1000000, num_trials, replace=F))
+
+set.seed(1)
+traffic$variation <- ifelse(rbinom(num_trials, 1, 0.5), 'A', 'B')
+
+traffic %>% 
+    count(variation) %>%
+    ggplot(aes(x=variation, y=n, fill=variation)) +
+    geom_col() +
+    geom_text(aes(label=comma_format()(n)), vjust = -0.4) +
+    labs(title='Number of people (trials) in each variation',
+         y='Trials',
+         x='Variation') +
+    theme(legend.position = 'none') +
+    theme_light()
+```
+
+```{r create_conversion_rate}
+baseline_conversion_rate <- 0.20
+traffic$baseline_conversion_rate <- baseline_conversion_rate
+```
+
+Now, we'll give everyone a baseline conversion rate of ``r percent(baseline_conversion_rate)``.
+
+Let's simulate the conversion for each person and see the overall conversion rates for each variation.
+
+```{r create_conversion_rate2}
+converted_by_id <- function(id, conversion_rate) {
+    set.seed(id)
+    return (as.logical(rbinom(1, 1, conversion_rate)))
+}
+
+traffic$converted <- map2_lgl(traffic$id, traffic$baseline_conversion_rate, ~ converted_by_id(.x, .y))
+
+conversion_table <- table(traffic$variation, traffic$converted)
+conversions <- c(conversion_table['A', 'TRUE'], conversion_table['B', 'TRUE'])
+non_conversions <- c(conversion_table['A', 'FALSE'], conversion_table['B', 'FALSE'])
+trials <- conversions + non_conversions
+
+traffic %>% 
+    count(variation, converted) %>%
+    group_by(variation) %>%
+    mutate(baseline_conversion_rate = n / sum(n)) %>%
+    ungroup() %>%
+    ggplot(aes(x=variation, y=n, fill=converted)) +
+    geom_col(position='dodge') +
+    geom_text(aes(label=comma_format()(n)),
+              position = position_dodge(width=0.9),
+              vjust = 1.2) +
+    geom_text(aes(label=percent_format()(baseline_conversion_rate)),
+              position = position_dodge(width=0.9),
+              vjust = -0.4) +
+    labs(title='Simulated 20% (Baseline) Conversion Rate from Binomial Distribution',
+         y='Trials',
+         x='Variation',
+         fill='Converted') +
+    theme_light()
+```
+
+```{r }
+simualted_percent_increase_in_b <- 0.05
+```
+
+P-value of above conversions: ``r prop.test(x=conversions, n=trials)$p.value``
+
+What we've done so far has simulated an experiment in which there was **no** change in the `A` group vs the `B` group. It was an experiment that might as well been an `A`/`A` test.
+
+Now, let's simulate everyone in the `B` having a ``r percent(simualted_percent_increase_in_b)`` increase (due from the affects of the new thing we are testing out.)
+
+```{r}
+traffic <- traffic %>%
+    mutate(lift = ifelse(variation == 'A', 0, simualted_percent_increase_in_b)) %>%
+    mutate(conversion_rate = baseline_conversion_rate + (baseline_conversion_rate * lift)) %>%
+    select(-converted)
+
+traffic$converted <- map2_lgl(traffic$id, traffic$conversion_rate, ~ converted_by_id(.x, .y))
+#set.seed(2)
+#traffic$converted <-as.logical(rbinom(num_trials, 1, baseline_conversion_rate))
+
+conversion_table <- table(traffic$variation, traffic$converted)
+conversions <- c(conversion_table['A', 'TRUE'], conversion_table['B', 'TRUE'])
+non_conversions <- c(conversion_table['A', 'FALSE'], conversion_table['B', 'FALSE'])
+trials <- conversions + non_conversions
+
+a_conversion_rate <- conversions[1] / trials[1]
+b_conversion_rate <- conversions[2] / trials[2]
+
+b_percent_increase_over_baseline <- (b_conversion_rate - baseline_conversion_rate) / b_conversion_rate
+b_percent_increase_over_a <- (b_conversion_rate - a_conversion_rate) / b_conversion_rate
+
+traffic %>% 
+    count(variation, converted) %>%
+    group_by(variation) %>%
+    mutate(conversion_rate = n / sum(n)) %>%
+    ungroup() %>%
+    ggplot(aes(x=variation, y=n, fill=converted)) +
+    geom_col(position='dodge') +
+    geom_text(aes(label=comma_format()(n)),
+              position = position_dodge(width=0.9),
+              vjust = 1.2) +
+    geom_text(aes(label=percent_format()(conversion_rate)),
+              position = position_dodge(width=0.9),
+              vjust = -0.4) +
+    labs(title='Simulated 20% Baseline Conversion Rate from Binomial Distribution, with 10% increase from effects of B variation.',
+         y='Trials',
+         x='Variation',
+         fill='Converted') +
+    theme_light()
+```
+
+Due to random varaiation (i.e. random sampling from binomial distribution), `B`'s conversion rate of ``r percent(b_conversion_rate)`` is a ``r percent(b_percent_increase_over_baseline)`` increase over the **true*** baseline conversion rate of ``r percent(baseline_conversion_rate)`` (that, because we are simulating, we know to be the true conversion rate), and a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
+
+The P-value is now: ``r prop.test(x=conversions, n=trials)$p.value``
+
+## But, here's the problem.
+
+These conversion rates assume that everyone that has converted, have been given any amount of time to convert, and regardless of how long after they converted, they had the same lift from the experiment.
+
+This doesn't take into account:
+
+- the fact that people take different lengths of time to convert (relative to when they entered into the experiment) and 
+- **the effects that that the A/B test has on a person, or group of people, diminishes over time.** It cannot be assumed that the effect of seeing a certain button, or certain design, or a certain experience, will have the same affect in that instant vs. 1 hour later vs. 1 day later vs. 30 days later. The effect of that "thing" on a person's decision or action will almost always, for almost everyone, diminish over time.
+
+If we can assume this is a safe assumption, the question is: **What are the effects of including conversion events from people who saw the experiment "a long time ago"?**
+
+Will these effects not matter since it is present in both variations?
+
+We have to do 2 things.
+
+First, we have to **simulate people converting at different lengths of time, relative to when they saw the experiment**. (We'll assume everyone in the experiment has not already converted; it won't affect the outcome.)
+
+Second, we have to **simulate the effect of the experiment diminishing over time**. 
+
+```{r}
+scale_a_b <- function(x, a, b) {
+
+    (b - a) * ((x - min(x)) / (max(x) - min(x))) + a 
+}
+
+set.seed(42)
+offset <- round(scale_a_b(rgamma(num_trials, shape = 3), 0, 50))
+#hist(offset)
+
+traffic <- traffic %>%
+    mutate(conversion_offset = offset,
+           conversion_offset = ifelse(conversion_offset > 30, 30, conversion_offset))
+
+traffic %>%
+    filter(converted) %>%
+    ggplot(aes(x=conversion_offset)) +
+    geom_histogram(binwidth = 1) +
+    scale_x_continuous(breaks = seq(0, 100)) +
+    facet_wrap(~variation, nrow=2) +
+    labs(title='Simualted Distribution of Days from Entering Experiment to Conversion.',
+         y='Number of people/trials',
+         x='Number of Days from Entering Experiment to Conversion')
+```
+
+Now, let's simulate a diminishing effect fromt the A/B test over time.
+
+We'll try it with **linear** diminishing, although in most cases, my assumption is it is more of an exponential dimishing effect, but we'll stick with linear to be conservative.
+
+Specifically, for everyone in the `B` group, I'll d
+
+```{r}
+traffic <- traffic %>%
+    mutate(diminished_conversion_rate = baseline_conversion_rate + (baseline_conversion_rate * lift * (30 - conversion_offset) / 30)) %>%
+    select(-converted)
+
+stopifnot(all(ifelse(traffic$variation == "A", traffic$baseline_conversion_rate == traffic$conversion_rate, TRUE)))
+stopifnot(all(ifelse(traffic$variation == "A", traffic$baseline_conversion_rate == traffic$diminished_conversion_rate, TRUE)))
+
+traffic %>%
+    # filter()
+    # filter(!is.na(conversion_offset)) %>%
+    group_by(conversion_offset, variation) %>%
+    summarise(diminished_conversion_rate = mean(diminished_conversion_rate)) %>%
+ #   spread(variation, diminished_conversion_rate) %>%
+    ggplot(aes(x=conversion_offset, y=diminished_conversion_rate, color=variation)) +
+    geom_line() +
+    geom_point() +
+    geom_text(aes(label=percent_format()(diminished_conversion_rate)), check_overlap=TRUE, size = 3, vjust=-0.5) + 
+    scale_y_continuous(labels = percent_format()) +
+    expand_limits(y=0) +
+    labs(title="Diminishing Effect of Experiment with respect to the Conversion Offset (i.e. Days from Entering Experiment to Conversion)",
+         y='Conversion Rate',
+         x='Days from Entering Experiment to Conversion',
+         color='Variation')
+```
+
+This is the key point. The longer you give people in the experiment to convert, the less effect the **lift** from experiment has, and the closer the conversion rates become.
+
+No such effect exists in the `A` group because they maintain the baseline conversion rate (there is nothing to diminish.)
+
+But letting people convert e.g. 25-30 days after the experiment, you will definitely capture the people who take longer to convert, but the majority of people who convert are no longer affected, **so they are now converting at a similar rate as the `A` group***, which removes the 
+
+Another way of saying this is it's likely that the people who converted after 30 days were going to do so anyway, with or without the thing you tested (or probably the majority of nauances and brain hacks in the website).
+
+So let's look at the results of the A/B test with the updated conversion rates.
+
+
+```{r}
+traffic$converted <- map2_lgl(traffic$id, traffic$diminished_conversion_rate, ~ converted_by_id(.x, .y))
+#set.seed(2)
+#traffic$converted <-as.logical(rbinom(num_trials, 1, baseline_conversion_rate))
+
+conversion_table <- table(traffic$variation, traffic$converted)
+conversions <- c(conversion_table['A', 'TRUE'], conversion_table['B', 'TRUE'])
+non_conversions <- c(conversion_table['A', 'FALSE'], conversion_table['B', 'FALSE'])
+trials <- conversions + non_conversions
+
+a_conversion_rate <- conversions[1] / trials[1]
+b_conversion_rate <- conversions[2] / trials[2]
+
+b_percent_increase_over_baseline <- (b_conversion_rate - baseline_conversion_rate) / b_conversion_rate
+b_percent_increase_over_a <- (b_conversion_rate - a_conversion_rate) / b_conversion_rate
+
+traffic %>% 
+    count(variation, converted) %>%
+    group_by(variation) %>%
+    mutate(conversion_rate = n / sum(n)) %>%
+    ungroup() %>%
+    ggplot(aes(x=variation, y=n, fill=converted)) +
+    geom_col(position='dodge') +
+    geom_text(aes(label=comma_format()(n)),
+              position = position_dodge(width=0.9),
+              vjust = 1.2) +
+    geom_text(aes(label=percent_format()(conversion_rate)),
+              position = position_dodge(width=0.9),
+              vjust = -0.4) +
+    labs(title='Simulated 20% Baseline Conversion Rate from Binomial Distribution, with 10% increase from effects of B variation.',
+         y='Trials',
+         x='Variation',
+         fill='Converted') +
+    theme_light()
+```
+
+Due to random varaiation (i.e. random sampling from binomial distribution), `B`'s conversion rate of ``r percent(b_conversion_rate)`` is a ``r percent(b_percent_increase_over_baseline)`` increase over the **true** baseline conversion rate of ``r percent(baseline_conversion_rate)`` (that, because we are simulating, we know to be the true conversion rate), and a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
+
+The P-value is now: ``r prop.test(x=conversions, n=trials)$p.value``
+
+
+
+
+
+But this doesn't answer the question of the affects of attribution windows. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Thoughts
+
+- Who is an A/B test inherently affecting? Are A/B tests affecting people that are more susceptible to certain psychological manipulations? Do the effects of A/B tests affect  people that take longer to make a decision?
