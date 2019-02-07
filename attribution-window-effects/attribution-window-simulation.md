@@ -51,12 +51,12 @@ to reduce the noise? Will the attribution window also reduce the signal?
 A related question is: **Should I use an attribution window, and if so,
 how long?**
 
-In other words, how much time should I allow for a conversion to be
-attributed to the corresponding variation of the experiment?
+In other words, how much time should I allow for a conversion event to
+be attributed to the corresponding variation of the experiment?
 
 The typical process for A/B testing doesn't seem to consider/use an
 attribution window: You run a test for, say, 30 days (depending on your
-sample size calculator). The people who enter the experiment on the
+sample size calculation). The people who enter the experiment on the
 first day it's started get 30 days to convert (i.e. their conversion
 event is counted at any point during the experiment). The people who
 enter into the experiment on the last day get &lt;= 1 day to convert.
@@ -94,7 +94,7 @@ Simulate A/B Groups
 We'll create `40,000` trials in experiment, roughly `20,000` per
 randomized variation.
 
-Then we'll randomly assign people into group `A` or gruop `B`, based on
+Then we'll randomly assign people into group `A` or group `B`, based on
 a random number generator.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/create_traffic-1.png)
@@ -188,12 +188,13 @@ final probability assigned to the person which will be based on the
 number of days they are assigned and the diminishing effect calculated
 below. One intuitive reason (maybe a justification), is that this number
 incorporates a lot of assumptions and characteristics about each person
-that we can't simulate: the buying impluse of the person, the degree of
-immediate need, the person's general thoughtfulness and scrutenty of
-making a decision (e.g. purchase), susceptibility to psychological
-"growth hacks", indecisiveness, and so on. These characteristics affect
-how long it will take them to convert and, either, as a result, or in
-addition to, how much they will be influenced by the variant.
+that we can't directly simulate: the buying impluse of the person, the
+degree of immediate need, the person's general thoughtfulness and
+scrutenty of making a decision (e.g. purchase), susceptibility to
+psychological "growth hacks", indecisiveness, and so on. These
+characteristics affect how long it will take them to convert and,
+either, as a result, or in addition to, how much they will be influenced
+by the variant.
 
 ### Simulate the the Diminishing Effect of the Variant Over Time.
 
@@ -210,9 +211,10 @@ So, for example, if a person in the `B` group is assigned (from above) a
 value that indicates they will potentially convert in the first day
 (remember, there conversion depending on a random draw from the binomial
 distribution), then that person will get the full effect of the Lift of
-the variant (i.e. they will get `100%` (top of the curve) of the
-`7.00% lift. On the other hand, if the person converts 30 days after seeing the experiment, they experience very litle lift from the experiment (The lift is not quite`0%\`,
-but close.)
+the variant (i.e. they will get `100%` (top of the curve) of the `7.00%`
+lift. On the other hand, if the person converts 30 days after seeing the
+experiment, they experience very litle lift from the experiment (The
+lift is not quite `0%`, but close.)
 
 The the rate of the diminishing effect of an experiment is large
 assumption of this simulation. This is my best guess at a reasonable
