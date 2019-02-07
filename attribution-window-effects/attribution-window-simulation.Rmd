@@ -313,7 +313,7 @@ traffic %>%
          fill='Conversion Rate')
 ```
 
-This is the key point. The longer you give people in the experiment to convert, the less effect the **lift** from experiment has, and the closer the conversion rate becomes to the `A` group.
+*This is the key point*. The longer you give people in the experiment to convert, the less effect the **lift** from experiment has, and the closer the conversion rate becomes to the `A` group.
 
 No such effect exists in the `A` group because they maintain the baseline conversion rate (there is nothing to diminish.)
 
@@ -352,13 +352,15 @@ traffic %>%
     ungroup() %>%
     ggplot(aes(x=variation, y=n, fill=converted)) +
     geom_col(position='dodge') +
+    scale_y_continuous(labels = comma_format()) +
     geom_text(aes(label=comma_format()(n)),
               position = position_dodge(width=0.9),
               vjust = 1.2) +
     geom_text(aes(label=percent_format()(conversion_rate)),
               position = position_dodge(width=0.9),
               vjust = -0.4) +
-    labs(title=paste('Simulated', percent(baseline_conversion_rate),'Baseline Conversion Rate from Binomial Distribution, with', percent(simulated_percent_increase_in_b),'increase from effects of B variation.'),
+    labs(title=paste('Simulated', percent(baseline_conversion_rate),'Baseline Conversion Rate from Binomial Distribution,\nwith (diminishing)', percent(simulated_percent_increase_in_b),'Lift from Effects of B variation.'),
+         subtitle='This is the conversion rate after simulated the effect of diminishing Lift over time.',
          y='Trials',
          x='Variation',
          fill='Converted') +
@@ -380,13 +382,8 @@ attribution_window_days <- 7
 Let's simulate a `r attribution_window_days`-day attribution window (i.e. only counting the the conversions that happen within `r attribution_window_days` days.)
 
 ```{r}
-#traffic$converted <- map2_lgl(traffic$id, traffic$diminished_conversion_rate, ~ converted_by_id(.x, .y))
-
 traffic <- traffic %>%
     mutate(converted_within_window = ifelse(conversion_offset <= attribution_window_days, converted, FALSE))
-
-#set.seed(2)
-#traffic$converted_within_window <-as.logical(rbinom(num_trials, 1, baseline_conversion_rate))
 
 conversion_table <- table(traffic$variation, traffic$converted_within_window)
 conversions <- c(conversion_table['A', 'TRUE'], conversion_table['B', 'TRUE'])
@@ -406,25 +403,28 @@ traffic %>%
     ungroup() %>%
     ggplot(aes(x=variation, y=n, fill=converted_within_window)) +
     geom_col(position='dodge') +
+    scale_y_continuous(labels = comma_format()) +
     geom_text(aes(label=comma_format()(n)),
               position = position_dodge(width=0.9),
               vjust = 1.2) +
     geom_text(aes(label=percent_format()(conversion_rate)),
               position = position_dodge(width=0.9),
               vjust = -0.4) +
-    labs(title=paste('Simulated', percent(baseline_conversion_rate),'Baseline Conversion Rate from Binomial Distribution, with', percent(simulated_percent_increase_in_b),'increase from effects of B variation.'),
+    labs(title=paste0('Simulated ', percent(baseline_conversion_rate),' Baseline Conversion Rate from Binomial Distribution,\nwith (diminishing) ', percent(simulated_percent_increase_in_b),' Lift from Effects of B variation &\n', attribution_window_days,'-Day Attribution Window.'),
+         subtitle=paste0('This is the conversion rate after simulated the effect of diminishing Lift over time, with a', attribution_window_days,'-Day Attribution Window.'),
          y='Trials',
          x='Variation',
          fill='Converted') +
     theme_light()
-
-prop.test(x=conversions, n=trials)$p.value
 ```
 
-The P-value is now: ``r prop.test(x=conversions, n=trials)$p.value``
+The P-value is once again statistically significant: ``r prop.test(x=conversions, n=trials)$p.value``.
 
+In this case, it appears we have reduced enough of the noise from the diluted effect and captured enough signal.
 
-What if we simulate p-value and converison rate over time, with and without the attribution window?
+Now, `B`'s conversion rate is only ``r percent(b_conversion_rate)`` because we are only counting the people who converted within 7-days from when they entered they experiment. But, it is a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
+
+## What if we simulate p-value and converison rate over time, with and without the attribution window?
 
 ```{r}
 set.seed(43)
@@ -433,17 +433,9 @@ traffic$day_entered_experiment <- floor(runif(n=num_trials, min=1, max=31))
 traffic <- traffic %>%
     mutate(day_converted = ifelse(converted, day_entered_experiment + conversion_offset, NA),
            day_converted_within_window = ifelse(converted_within_window, day_entered_experiment + conversion_offset, NA))
-
-
-set.seed(43)
-traffic$day_entered_experiment <- floor(runif(n=num_trials, min=1, max=31))
-
-traffic <- traffic %>%
-    mutate(day_converted = ifelse(converted, day_entered_experiment + conversion_offset, NA),
-           day_converted_within_window = ifelse(converted_within_window, day_entered_experiment + conversion_offset, NA))
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 traffic %>%
     count(day_entered_experiment, variation) %>%
     ggplot(aes(x=day_entered_experiment, y=n, color=variation, group=variation)) +
@@ -462,7 +454,7 @@ traffic %>%
     expand_limits(y=0)
 ```
 
-This isn't doing what i think it's doing.. becuase it's still not counting the fact that a lot of people on the first day will not have converted yet
+### No Attribution Window
 
 ```{r}
 num_days_people_are_still_converting <- max(traffic$day_entered_experiment) + max(traffic$conversion_offset)
@@ -479,16 +471,22 @@ for(ex_day in 1:num_days_people_are_still_converting) {
                                     cumulative_trials = sum(traffic$variation == "B" & traffic$day_entered_experiment <= ex_day)))
 
     experiment <- rbind(experiment, day_results)
-
-
 }
 experiment %>%
     mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
     ggplot(aes(x=experiment_day, y=cumulative_conversion_rate, color = variation, group=variation)) +
         geom_line() +
         geom_point() +
-        scale_y_continuous(breaks = seq(0, 1, 0.05)) +
-        expand_limits(y=c(0,0.3))
+        scale_y_continuous(breaks = seq(0, 1, 0.05),
+                           labels = percent_format()) +
+        expand_limits(y=c(0,0.25)) +
+        scale_x_continuous(breaks = seq(0, 100, 5)) +
+        labs(title='Conversion rate over time - No Attribution Window',
+         subtitle="This shows, for each day of the experiment (1-30) and each day after the experiment that people are still converting (31-60), the conversion rate if you we're to look a report on that day, using no attribution window", 
+         y='Conversion Rate',
+         x='Day of Experiment (and days after)',
+         color='Variation') +
+    theme_light()
 
 temp <- experiment %>%
     #mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
@@ -496,8 +494,47 @@ temp <- experiment %>%
   unite(temp, variation, variable) %>%
   spread(temp, value)
 
-temp$p_value <- with(temp, pmap_dbl(list(A_cumulative_conversions, B_cumulative_conversions, A_cumulative_trials, B_cumulative_trials),
-                                    function(a, b, c, d) prop.test(x=c(a, b), n=c(c, d))$p.value))
+prop.test_list <- with(temp, pmap(list(A_cumulative_conversions, B_cumulative_conversions, A_cumulative_trials, B_cumulative_trials),
+                                    function(a, b, c, d) {
+                                        if(a+b > 0) {
+                                            prop.test(x=c(b, a), n=c(d, c))
+                                        } else {
+                                            NA    
+                                        }
+                                    }
+                                    ))
+temp$p_value <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         .$p.value   
+    }
+})
+temp$b_minus_a <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         as.numeric(.$estimate[1] - .$estimate[2])
+    }
+})
+temp$conf_low <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         .$conf.int[1]
+    }
+})
+temp$conf_high <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         .$conf.int[2]
+    }
+})
 
 temp %>%
     ggplot(aes(x=experiment_day, y=p_value)) +
@@ -508,9 +545,39 @@ temp %>%
     scale_y_continuous(breaks = seq(0, 1, 0.05)) +
     expand_limits(y=c(0,1))
 
+temp %>%
+    ggplot(aes(x=experiment_day, y=b_minus_a)) +
+        geom_line() +
+        scale_y_continuous(labels = percent_format()) +
+        geom_ribbon(aes(ymin = conf_low, ymax = conf_high), fill = 'green', alpha=0.15) +
+        geom_ribbon(aes(ymin = ifelse(conf_low <= 0, conf_low, NA), ymax = ifelse(conf_low <= 0, conf_high, NA)), fill = 'red', alpha=0.45) +
+        geom_ribbon(aes(ymin = ifelse(conf_low > 0, conf_low, NA), ymax = ifelse(conf_low > 0, conf_high, NA)), fill = 'green', alpha=0.2) +
+        geom_hline(yintercept = 0, color='red', alpha=0.5) +
+        geom_text(aes(label=percent(b_minus_a)), vjust=-1, check_overlap = TRUE) +
+        labs(title='Difference in Conversion Rate of `B` - `A`, with Frequentist Confidence Interval - \nNo Attribution Window',
+             y='Difference in Conversion Rate from B minus A',
+             x='Day of Experiment (and days after)')
+
+temp %>%
+    mutate(a_cr = A_cumulative_conversions / A_cumulative_trials,
+           b_minus_a = b_minus_a / a_cr,
+           conf_low = conf_low / a_cr,
+           conf_high = conf_high / a_cr) %>%
+    ggplot(aes(x=experiment_day, y=b_minus_a)) +
+        geom_line() +
+        coord_cartesian(ylim=c(-0.10, 1)) +
+        scale_y_continuous(labels = percent_format()) +
+        geom_ribbon(aes(ymin = conf_low, ymax = conf_high), fill = 'green', alpha=0.15) +
+        geom_ribbon(aes(ymin = ifelse(conf_low <= 0, conf_low, NA), ymax = ifelse(conf_low <= 0, conf_high, NA)), fill = 'red', alpha=0.45) +
+        geom_ribbon(aes(ymin = ifelse(conf_low > 0, conf_low, NA), ymax = ifelse(conf_low > 0, conf_high, NA)), fill = 'green', alpha=0.2) +
+        geom_hline(yintercept = 0, color='red', alpha=0.5) +
+        geom_text(aes(label=percent(b_minus_a)), vjust=-1, check_overlap = TRUE) +    
+        labs(title='Difference in Conversion Rate of `B` - `A`, with Frequentist Confidence Interval - \nNo Attribution Window',
+             y='Lift (i.e. Percent change from A to B)',
+             x='Day of Experiment (and days after)') 
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 num_days_people_are_still_converting <- max(traffic$day_entered_experiment) + max(traffic$conversion_offset)
 experiment <- data.frame(experiment_day = NULL, variation=NULL, conversions = NULL, trials = NULL)
 
@@ -527,8 +594,6 @@ for(ex_day in 1:num_days_people_are_still_converting) {
                                     cumulative_trials = sum(local_traffic$variation == "B")))
 
     experiment <- rbind(experiment, day_results)
-
-
 }
 experiment %>%
     mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
@@ -538,18 +603,10 @@ experiment %>%
         scale_y_continuous(breaks = seq(0, 1, 0.05)) +
         expand_limits(y=c(0,0.3))
 
-
-# experiment %>%
-#     mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
-#     #select(experiment_day, variation, cumulative_conversion_rate) %>%
-#     spread(variation, c(cumulative_conversions, cumualtive_trials))
-#     
-
 temp <- experiment %>%
-    #mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
-  gather(variable, value, -(experiment_day:variation)) %>%
-  unite(temp, variation, variable) %>%
-  spread(temp, value)
+    gather(variable, value, -(experiment_day:variation)) %>%
+    unite(temp, variation, variable) %>%
+    spread(temp, value)
 
 prop.test_list <- with(temp, pmap(list(A_cumulative_conversions, B_cumulative_conversions, A_cumulative_trials, B_cumulative_trials),
                                     function(a, b, c, d) {
@@ -580,113 +637,136 @@ temp %>%
 
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### With Attribution Window
 
 ```{r}
-traffic %>%
-    rename(experiment_day = day_entered_experiment) %>%
-    group_by(experiment_day, variation) %>%
-    summarise(trials= n(),
-              conversions=sum(day_converted <= experiment_day, na.rm = TRUE)) %>%
-    ungroup() %>%
-    select(conversions) %>% sum()
+num_days_people_are_still_converting <- max(traffic$day_entered_experiment) + max(traffic$conversion_offset) + attribution_window_days
+experiment <- data.frame(experiment_day = NULL, variation=NULL, conversions = NULL, trials = NULL)
+
+for(ex_day in 1:num_days_people_are_still_converting) {
+    local_traffic <- traffic %>% filter(day_entered_experiment + attribution_window_days < ex_day)
+
+    day_results <- rbind(data.frame(experiment_day = ex_day,
+                                    variation="A",
+                                    cumulative_conversions = sum(local_traffic$variation == "A" & local_traffic$day_converted_within_window <= ex_day, na.rm = TRUE),
+                                    cumulative_trials = sum(local_traffic$variation == "A")),
+                         data.frame(experiment_day = ex_day,
+                                    variation="B",
+                                    cumulative_conversions = sum(local_traffic$variation == "B" & local_traffic$day_converted_within_window <= ex_day, na.rm = TRUE),
+                                    cumulative_trials = sum(local_traffic$variation == "B")))
+
+    experiment <- rbind(experiment, day_results)
+}
+
+experiment %>%
+    mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
+    ggplot(aes(x=experiment_day, y=cumulative_conversion_rate, color = variation, group=variation)) +
+        geom_line() +
+        geom_point() +
+        scale_y_continuous(breaks = seq(0, 1, 0.05),
+                           labels = percent_format()) +
+        expand_limits(y=c(0,0.25)) +
+        scale_x_continuous(breaks = seq(0, 100, 5)) +
+        labs(title='Conversion rate over time - With Attribution Window',
+         subtitle="This shows, for each day of the experiment (1-30) and each day after the experiment that people are still converting (31-60), the conversion rate if you we're to look a report on that day, using With attribution window", 
+         y='Conversion Rate',
+         x='Day of Experiment (and days after)',
+         color='Variation') +
+    theme_light()
+
+temp <- experiment %>%
+    #mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
+  gather(variable, value, -(experiment_day:variation)) %>%
+  unite(temp, variation, variable) %>%
+  spread(temp, value)
+
+prop.test_list <- with(temp, pmap(list(A_cumulative_conversions, B_cumulative_conversions, A_cumulative_trials, B_cumulative_trials),
+                                    function(a, b, c, d) {
+                                        if(a+b > 0) {
+                                            prop.test(x=c(b, a), n=c(d, c))
+                                        } else {
+                                            NA    
+                                        }
+                                    }
+                                    ))
+temp$p_value <- map_dbl(prop.test_list,~  {
     
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         .$p.value   
+    }
+})
+temp$b_minus_a <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         as.numeric(.$estimate[1] - .$estimate[2])
+    }
+})
+temp$conf_low <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         .$conf.int[1]
+    }
+})
+temp$conf_high <- map_dbl(prop.test_list,~  {
+    
+    if(is.na(.[[1]])) {
+        return (NA)
+    } else {
+         .$conf.int[2]
+    }
+})
 
-sum(!is.na(traffic$day_converted))
+temp %>%
+    ggplot(aes(x=experiment_day, y=p_value)) +
+        geom_line() +
+        geom_point() +
+    geom_text(aes(label=round(p_value, 3)), vjust=-0.5, check_overlap = TRUE) +
+    geom_hline(yintercept = 0.05, color ='red') +
+    scale_y_continuous(breaks = seq(0, 1, 0.05)) +
+    expand_limits(y=c(0,1))
 
-sort(unique(traffic$day_converted))
+temp %>%
+    ggplot(aes(x=experiment_day, y=b_minus_a)) +
+        geom_line() +
+        scale_y_continuous(labels = percent_format()) +
+        geom_ribbon(aes(ymin = conf_low, ymax = conf_high), fill = 'green', alpha=0.15) +
+        geom_ribbon(aes(ymin = ifelse(conf_low <= 0, conf_low, NA), ymax = ifelse(conf_low <= 0, conf_high, NA)), fill = 'red', alpha=0.45) +
+        geom_ribbon(aes(ymin = ifelse(conf_low > 0, conf_low, NA), ymax = ifelse(conf_low > 0, conf_high, NA)), fill = 'green', alpha=0.2) +
+        geom_hline(yintercept = 0, color='red', alpha=0.5) +
+        geom_text(aes(label=percent(b_minus_a)), vjust=-1, check_overlap = TRUE) +
+        labs(title='Difference in Conversion Rate of `B` - `A`, with Frequentist Confidence Interval - \nWith Attribution Window',
+             y='Difference in Conversion Rate from B minus A',
+             x='Day of Experiment (and days after)')
 
-traffic %>%
-    group_by(day_entered_experiment, variation) %>%
-    summarise(conversions = sum(converted),
-              trials = n()) %>%
-    ungroup() %>%
-    arrange(day_entered_experiment) %>%
-    group_by(variation) %>%
-    mutate(cumulative_conversions=cumsum(conversions),
-           cumulative_trials=cumsum(trials)) %>%
-    ungroup() %>%
-    mutate(cumulative_conversion_rate= cumulative_conversions/cumulative_trials) %>%
-    select(day_entered_experiment, variation, cumulative_conversion_rate) %>%
-    #spread(variation, cumulative_conversion_rate) %>%
-    ggplot(aes(x=day_entered_experiment, y = cumulative_conversion_rate, color = variation)) +
-    geom_line() +
-    geom_point()
+temp %>%
+    mutate(a_cr = A_cumulative_conversions / A_cumulative_trials,
+           b_minus_a = b_minus_a / a_cr,
+           conf_low = conf_low / a_cr,
+           conf_high = conf_high / a_cr) %>%
+    ggplot(aes(x=experiment_day, y=b_minus_a)) +
+        geom_line() +
+        coord_cartesian(ylim=c(-0.10, 1)) +
+        scale_y_continuous(labels = percent_format()) +
+        geom_ribbon(aes(ymin = conf_low, ymax = conf_high), fill = 'green', alpha=0.15) +
+        geom_ribbon(aes(ymin = ifelse(conf_low <= 0, conf_low, NA), ymax = ifelse(conf_low <= 0, conf_high, NA)), fill = 'red', alpha=0.45) +
+        geom_ribbon(aes(ymin = ifelse(conf_low > 0, conf_low, NA), ymax = ifelse(conf_low > 0, conf_high, NA)), fill = 'green', alpha=0.2) +
+        geom_hline(yintercept = 0, color='red', alpha=0.5) +
+        geom_text(aes(label=percent(b_minus_a)), vjust=-1, check_overlap = TRUE) +    
+        labs(title='Difference in Conversion Rate of `B` - `A`, with Frequentist Confidence Interval - \nWith Attribution Window',
+             y='Lift (i.e. Percent change from A to B)',
+             x='Day of Experiment (and days after)') 
 ```
 
-```{r}
-traffic %>%
-    group_by(day_entered_experiment, variation) %>%
-    summarise(conversions = sum(converted),
-              trials = n()) %>%
-    ungroup() %>%
-    arrange(day_entered_experiment) %>%
-    group_by(variation) %>%
-    mutate(cumulative_conversions=cumsum(conversions),
-           cumulative_trials=cumsum(trials)) %>%
-    ungroup() %>%
-    mutate(cumulative_conversion_rate= cumulative_conversions/cumulative_trials) %>%
-    select(day_entered_experiment, variation, cumulative_conversion_rate) %>%
-    #spread(variation, cumulative_conversion_rate) %>%
-    ggplot(aes(x=day_entered_experiment, y = cumulative_conversion_rate, color = variation)) +
-    geom_line() +
-    geom_point()
-```
 
-```{r}
-traffic %>%
-    group_by(day_entered_experiment, variation) %>%
-    summarise(conversions = sum(converted_within_window),
-              trials = n()) %>%
-    ungroup() %>%
-    arrange(day_entered_experiment) %>%
-    group_by(variation) %>%
-    mutate(cumulative_conversions=cumsum(conversions),
-           cumulative_trials=cumsum(trials)) %>%
-    ungroup() %>%
-    mutate(cumulative_conversion_rate= cumulative_conversions/cumulative_trials) %>%
-    select(day_entered_experiment, variation, cumulative_conversion_rate) %>%
-    #spread(variation, cumulative_conversion_rate) %>%
-    ggplot(aes(x=day_entered_experiment, y = cumulative_conversion_rate, color = variation)) +
-    geom_line() +
-    geom_point()
-```
+# Cautions
 
-
-
-
-
-
-
-
+- The effects seen from the diminishing lift and the attribution windows are based on many assumptions, including the distribution of days from entering into the experiment to conerting, and the rate/distribution of diminishing effect over time. There is also random variation in the simulation. It's possible that in other cases, other types of random variation will not pick up the same patterns.
 
 
 
