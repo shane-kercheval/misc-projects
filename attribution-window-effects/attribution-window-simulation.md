@@ -40,7 +40,7 @@ experiments, if a person "converts" (e.g. buys your product/service) a
 year after seeing the variant, then that variant had virtually nothing
 to do with conversion. Depnding on the experiment/variant, we can
 probably make similar statements for (perhaps) days, (mostly likely)
-weeks, and (certainly) months after the variant is seen.\*\*
+weeks, and (certainly) months after the variant is seen.\*
 
 The concern is that the longer you give people to convert, the less
 **lift** there is, and you're essentially including people who are, at
@@ -84,7 +84,7 @@ example, you've completely redesigned your product and that new
 experience does have a long lasting impact on the customers decision. In
 those cases, the lift is high enough that any concerns we deal with here
 are probably going to disappear from the large lift. I assume that's not
-the majority of A/B tests.
+the majority of A/B tests.\*
 
 ------------------------------------------------------------------------
 
@@ -317,7 +317,7 @@ without the attribution window?
 
 ### No Attribution Window
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-1.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-2.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-3.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-4.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-1.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-2.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-3.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-4.png)
 
 ### With Attribution Window
 
@@ -325,7 +325,7 @@ without the attribution window?
 
     ## Warning: Removed 16 rows containing missing values (geom_point).
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-1.png)
 
     ## Warning: Removed 8 rows containing missing values (geom_path).
 
@@ -333,19 +333,19 @@ without the attribution window?
 
     ## Warning: Removed 8 rows containing missing values (geom_text).
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-2.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-2.png)
 
     ## Warning: Removed 8 rows containing missing values (geom_path).
 
     ## Warning: Removed 8 rows containing missing values (geom_text).
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-3.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-3.png)
 
     ## Warning: Removed 8 rows containing missing values (geom_path).
 
     ## Warning: Removed 8 rows containing missing values (geom_text).
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-4.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-4.png)
 
 Cautions
 ========

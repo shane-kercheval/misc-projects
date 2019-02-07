@@ -32,7 +32,7 @@ A few definitions:
 
 The first question is: **How does the diminishing lift of the variant, over time, affect the outcome of the experiment?**
 
-My assumption is that there is a diminishing effect of the variant on the person's decision-making process or actions, over time, relative to one the person first saw the variant. In other words, for **most** A/B experiments, most people will see the variant (e.g. certain button, page, or experience that is different from what people in the control saw) and the impact that the particular variant gives (i.e. the **lift**; the increase to the person's probability of converting compared to the probability had they been in the control group) is highest in the first moments that it is experienced, but that lift (exponentially?) decreases over time. At the extreme, for most experiments, if a person "converts" (e.g. buys your product/service) a year after seeing the variant, then that variant had virtually nothing to do with conversion. Depnding on the experiment/variant, we can probably make similar statements for (perhaps) days, (mostly likely) weeks, and (certainly) months after the variant is seen.**
+My assumption is that there is a diminishing effect of the variant on the person's decision-making process or actions, over time, relative to one the person first saw the variant. In other words, for **most** A/B experiments, most people will see the variant (e.g. certain button, page, or experience that is different from what people in the control saw) and the impact that the particular variant gives (i.e. the **lift**; the increase to the person's probability of converting compared to the probability had they been in the control group) is highest in the first moments that it is experienced, but that lift (exponentially?) decreases over time. At the extreme, for most experiments, if a person "converts" (e.g. buys your product/service) a year after seeing the variant, then that variant had virtually nothing to do with conversion. Depnding on the experiment/variant, we can probably make similar statements for (perhaps) days, (mostly likely) weeks, and (certainly) months after the variant is seen.*
 
 The concern is that the longer you give people to convert, the less **lift** there is, and you're essentially including people who are, at that point, converting at the same rate as the control group. This introduces noise into your experiment. Can we use an attributionw window to reduce the noise? Will the attribution window also reduce the signal?
 
@@ -46,7 +46,7 @@ One hypothesis is, the fact that some people get more time and some people get l
 
 ---
 
-**Perhaps this means that A/B testing is inherently targeting people that either A) more suspectible to pschogolical manipulation (e.g. mind hacks, high pressure sales tactics, buying things based on whether it's sunny or dark outside, etc.) and/or B) wanting to make an immediately decision C) impulsive buyers. At the very least, it seems like the target segment of A/B tests is the subpopulation of the target market that takes less time to make decisions and/or has a more immediate need. But, that's a direction I don't want to go right now. The caveat to this is that, there are of course experiments that you run where, for example, you've completely redesigned your product and that new experience does have a long lasting impact on the customers decision. In those cases, the lift is high enough that any concerns we deal with here are probably going to disappear from the large lift. I assume that's not the majority of A/B tests.
+**Perhaps this means that A/B testing is inherently targeting people that either A) more suspectible to pschogolical manipulation (e.g. mind hacks, high pressure sales tactics, buying things based on whether it's sunny or dark outside, etc.) and/or B) wanting to make an immediately decision C) impulsive buyers. At the very least, it seems like the target segment of A/B tests is the subpopulation of the target market that takes less time to make decisions and/or has a more immediate need. But, that's a direction I don't want to go right now. The caveat to this is that, there are of course experiments that you run where, for example, you've completely redesigned your product and that new experience does have a long lasting impact on the customers decision. In those cases, the lift is high enough that any concerns we deal with here are probably going to disappear from the large lift. I assume that's not the majority of A/B tests.*
 
 ---
 
@@ -77,6 +77,7 @@ traffic %>%
     theme_light() +
     theme(legend.position = 'none') +
     scale_y_continuous(labels = comma_format()) +
+    scale_fill_manual("legend", values = c("A" = "#FF9500", "B" = "#19A6FF")) +
     labs(title='Number of people (trials) in each variation',
          y='Trials',
          x='Variation')
@@ -119,6 +120,7 @@ traffic %>%
     ggplot(aes(x=variation, y=n, fill=converted)) +
     scale_y_continuous(labels = comma_format()) +
     geom_col(position='dodge') +
+    scale_fill_manual(values = c("TRUE" = "#85CD75", "FALSE" = "#F57670")) +
     geom_text(aes(label=comma_format()(n)),
               position = position_dodge(width=0.9),
               vjust = 1.2) +
@@ -173,6 +175,7 @@ traffic %>%
     ggplot(aes(x=variation, y=n, fill=converted)) +
     geom_col(position='dodge') +
     scale_y_continuous(labels = comma_format()) +
+    scale_fill_manual(values = c("TRUE" = "#85CD75", "FALSE" = "#F57670")) +
     geom_text(aes(label=comma_format()(n)),
               position = position_dodge(width=0.9),
               vjust = 1.2) +
@@ -311,6 +314,7 @@ traffic %>%
     geom_point() +
     geom_text(aes(label=percent_format()(diminished_conversion_rate)), check_overlap=TRUE, size = 3, vjust=-0.5) + 
     scale_y_continuous(labels = percent_format()) +
+    scale_color_manual(values = c("A" = "#FF9500", "B" = "#19A6FF")) +
     #expand_limits(y=0) +
     labs(title="Diminishing Effect of Variant",
          y='Conversion Rate',
@@ -384,6 +388,7 @@ traffic %>%
     ggplot(aes(x=variation, y=n, fill=converted)) +
     geom_col(position='dodge') +
     scale_y_continuous(labels = comma_format()) +
+    scale_fill_manual(values = c("TRUE" = "#85CD75", "FALSE" = "#F57670")) +
     geom_text(aes(label=comma_format()(n)),
               position = position_dodge(width=0.9),
               vjust = 1.2) +
@@ -439,6 +444,7 @@ traffic %>%
     ggplot(aes(x=variation, y=n, fill=converted_within_window)) +
     geom_col(position='dodge') +
     scale_y_continuous(labels = comma_format()) +
+    scale_fill_manual(values = c("TRUE" = "#85CD75", "FALSE" = "#F57670")) +
     geom_text(aes(label=comma_format()(n)),
               position = position_dodge(width=0.9),
               vjust = 1.2) +
@@ -472,25 +478,6 @@ traffic <- traffic %>%
            day_converted_within_window = ifelse(converted_within_window, day_entered_experiment + conversion_offset, NA))
 ```
 
-```{r eval=FALSE, include=FALSE}
-traffic %>%
-    count(day_entered_experiment, variation) %>%
-    ggplot(aes(x=day_entered_experiment, y=n, color=variation, group=variation)) +
-    geom_line() +
-    geom_point() +
-    expand_limits(y=0)
-
-
-traffic %>%
-    mutate(offset_first_day = conversion_offset == 0) %>%
-     count(day_entered_experiment, variation, offset_first_day) %>%
-    filter(offset_first_day) %>%
-    ggplot(aes(x=day_entered_experiment, y=n, color=variation, group=variation)) +
-    geom_line() +
-    geom_point() +
-    expand_limits(y=0)
-```
-
 ### No Attribution Window
 
 ```{r}
@@ -518,6 +505,7 @@ experiment %>%
                            labels = percent_format()) +
         expand_limits(y=c(0,0.25)) +
         scale_x_continuous(breaks = seq(0, 100, 5)) +
+        scale_color_manual(values = c("A" = "#FF9500", "B" = "#19A6FF")) +
         labs(title='Conversion rate over time - No Attribution Window',
          subtitle="This shows, for each day of the experiment (1-30) and each day after the experiment that people are still converting (31-60), the conversion rate if you we're to look a report on that day, using no attribution window", 
          y='Conversion Rate',
@@ -614,66 +602,6 @@ temp %>%
              x='Day of Experiment (and days after)') 
 ```
 
-```{r eval=FALSE, include=FALSE}
-num_days_people_are_still_converting <- max(traffic$day_entered_experiment) + max(traffic$conversion_offset)
-experiment <- data.frame(experiment_day = NULL, variation=NULL, conversions = NULL, trials = NULL)
-
-for(ex_day in 1:num_days_people_are_still_converting) {
-    local_traffic <- traffic %>% filter(day_entered_experiment + attribution_window_days < ex_day)
-
-    day_results <- rbind(data.frame(experiment_day = ex_day,
-                                    variation="A",
-                                    cumulative_conversions = sum(local_traffic$variation == "A" & local_traffic$day_converted_within_window <= ex_day, na.rm = TRUE),
-                                    cumulative_trials = sum(local_traffic$variation == "A")),
-                         data.frame(experiment_day = ex_day,
-                                    variation="B",
-                                    cumulative_conversions = sum(local_traffic$variation == "B" & local_traffic$day_converted_within_window <= ex_day, na.rm = TRUE),
-                                    cumulative_trials = sum(local_traffic$variation == "B")))
-
-    experiment <- rbind(experiment, day_results)
-}
-experiment %>%
-    mutate(cumulative_conversion_rate=cumulative_conversions / cumulative_trials) %>%
-    ggplot(aes(x=experiment_day, y=cumulative_conversion_rate, color = variation, group=variation)) +
-        geom_line() +
-        geom_point() +
-        scale_y_continuous(breaks = seq(0, 1, 0.05)) +
-        expand_limits(y=c(0,0.3))
-
-temp <- experiment %>%
-    gather(variable, value, -(experiment_day:variation)) %>%
-    unite(temp, variation, variable) %>%
-    spread(temp, value)
-
-prop.test_list <- with(temp, pmap(list(A_cumulative_conversions, B_cumulative_conversions, A_cumulative_trials, B_cumulative_trials),
-                                    function(a, b, c, d) {
-                                        if(a+b > 0) {
-                                            prop.test(x=c(a, b), n=c(c, d))
-                                        } else {
-                                            NA    
-                                        }
-                                    }
-                                    ))
-
-temp$p_value <- map_dbl(prop.test_list,~  {
-    
-    if(is.na(.[[1]])) {
-        return (NA)
-    } else {
-         .$p.value   
-    }
-})
-temp %>%
-    ggplot(aes(x=experiment_day, y=p_value)) +
-        geom_line() +
-        geom_point() +
-    geom_text(aes(label=round(p_value, 3)), vjust=-0.5, check_overlap = TRUE) +
-    geom_hline(yintercept = 0.05, color ='red') +
-    scale_y_continuous(breaks = seq(0, 1, 0.05)) +
-    expand_limits(y=c(0,1))
-
-```
-
 ### With Attribution Window
 
 ```{r}
@@ -704,6 +632,7 @@ experiment %>%
                            labels = percent_format()) +
         expand_limits(y=c(0,0.25)) +
         scale_x_continuous(breaks = seq(0, 100, 5)) +
+        scale_color_manual(values = c("A" = "#FF9500", "B" = "#19A6FF")) +
         labs(title='Conversion rate over time - With Attribution Window',
          subtitle="This shows, for each day of the experiment (1-30) and each day after the experiment that people are still converting (31-60), the conversion rate if you we're to look a report on that day, using With attribution window", 
          y='Conversion Rate',
