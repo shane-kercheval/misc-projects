@@ -1,3 +1,5 @@
+true
+
 What are the effects of diminishing lift from an A/B test and the use of attribution windows?
 =============================================================================================
 
@@ -306,6 +308,12 @@ Now, `B`'s conversion rate is only `10.7%` because we are only counting
 the people who converted within 7-days from when they entered they
 experiment. But, it is a `9.02%` increase over `A`'s conversion rate of
 `9.71%`.
+
+**The downside to using attribution-windows is that, because your
+calculated conversion rate is lower (and depending on the size of the
+window, it could be substantially lower), the sample size required to
+reach statistical significance increases, along with the amount of time
+required to run the test.**
 
 P-Values and Confidence Intervals, Over Time
 --------------------------------------------

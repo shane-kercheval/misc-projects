@@ -465,6 +465,8 @@ In this case, it appears we have reduced enough of the noise from the effects of
 
 Now, `B`'s conversion rate is only ``r percent(b_conversion_rate)`` because we are only counting the people who converted within 7-days from when they entered they experiment. But, it is a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
 
+**The downside to using attribution-windows is that, because your calculated conversion rate is lower (and depending on the size of the window, it could be substantially lower), the sample size required to reach statistical significance increases, along with the amount of time required to run the test.**
+
 ## P-Values and Confidence Intervals, Over Time
 
 What if we simulate p-value and converison rate over time, with and without the attribution window?
