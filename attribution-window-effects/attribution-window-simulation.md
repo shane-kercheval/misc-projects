@@ -28,7 +28,7 @@ over time, affect the outcome of the experiment?**
 
 My assumption is that there is a diminishing effect of the variant on
 the person's decision-making process or actions, over time, relative to
-one the person first saw the variant. In other words, for **most** A/B
+when the person first saw the variant. In other words, for **most** A/B
 experiments, most people will see the variant (e.g. certain button,
 page, or experience that is different from what people in the control
 saw) and the impact that the particular variant gives (i.e. the
@@ -366,3 +366,21 @@ Cautions
     random variation in the simulation. It's possible that in other
     cases, other types of random variation will not pick up the same
     patterns.
+-   I assumed the baseline conversion rate remains the same and is not
+    dependent on the number of days it took to convert. This was meant
+    to be a simplifying assumption. In reality, the longer it takes
+    people to convert, the lower probability they probabily have of
+    converting. However, the same decrease in probabily will be present
+    in both the control and variant groups. The major issue shown above
+    is that the variant (`B`) group starts out at a higher probabilty,
+    **relative** to the `A` group, and then over time **converges** to
+    the `A` group's conversion rate (i.e. the baseline). If the baseline
+    changes over time, you will still get the same **relative** start
+    point and **convergence**. On the other hand, if we did account for
+    the baseline conversion rate's potential decrease over time, we
+    might see less conversion events in the areas that have similar
+    conversion rates as the A group, and the result would be that we are
+    over-estimating the impact (based on all the assumptions above) of
+    the effects shown above.. Or... is this already accounted from the
+    fact that there is, overall, a lot less people converting at that
+    time. Yeah, now that i think about it. That's dumb, delete.
