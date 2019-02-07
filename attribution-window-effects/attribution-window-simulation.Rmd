@@ -346,7 +346,7 @@ traffic %>%
          fill='Conversion Rate')
 ```
 
-*This is the key point*. The longer you give people in the experiment to convert, the less effect the **lift** from experiment has, and the closer the conversion rate becomes to the `A` group.
+**This is the key point**. The longer you give people in the experiment to convert, the less effect the **lift** from experiment has, and the closer the conversion rate becomes to the `A` group.
 
 No such effect exists in the `A` group because they maintain the baseline conversion rate (there is nothing to diminish.)
 
