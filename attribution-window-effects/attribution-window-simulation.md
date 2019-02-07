@@ -38,7 +38,7 @@ highest in the first moments that it is experienced, but that lift
 (exponentially?) decreases over time. At the extreme, for most
 experiments, if a person "converts" (e.g. buys your product/service) a
 year after seeing the variant, then that variant had virtually nothing
-to do with conversion. Depnding on the experiment/variant, we can
+to do with conversion. Depending on the experiment/variant, we can
 probably make similar statements for (perhaps) days, (mostly likely)
 weeks, and (certainly) months after the variant is seen.(++)
 
