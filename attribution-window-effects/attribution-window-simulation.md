@@ -40,14 +40,15 @@ to do with conversion. Depending on the experiment/variant, we can
 probably make similar statements for (perhaps) days, (mostly likely)
 weeks, and (certainly) months after the variant is seen.(++)
 
-The concern is that the longer you give people to convert, the less
-**lift** there is, and you're essentially including people who are, at
-that point, converting at the same rate as the control group. This
-introduces noise into your experiment. Can we use an attributionw window
-to reduce the noise? Will the attribution window also reduce the signal?
+The potential concern is that the longer you give people to convert, the
+less **lift** there is, and you're essentially including people who are,
+at that point, converting at the same rate as the control group. Does
+this introduce noise into your experiment? And, if so, can we use an
+attributionw window to reduce the noise? Or will the attribution window
+also reduce the signal?
 
-A related question is: **Should I use an attribution window, and if so,
-how long?**
+Which introduces the next question: **Should I use an attribution
+window, and if so, what should I set the window to?**
 
 In other words, how much time should I allow for a conversion event to
 be attributed to the corresponding variation of the experiment?
@@ -188,7 +189,7 @@ below. One intuitive reason (maybe a justification), is that this number
 incorporates a lot of assumptions and characteristics about each person
 that we can't directly simulate: the buying impluse of the person, the
 degree of immediate need, the person's general thoughtfulness and
-scrutenty of making a decision (e.g. purchase), susceptibility to
+scrutiny of making a decision (e.g. purchase), susceptibility to
 psychological "growth hacks", indecisiveness, and so on. These
 characteristics affect how long it will take them to convert and,
 either, as a result, or in addition to, how much they will be influenced
@@ -197,7 +198,8 @@ by the variant.
 ### Simulate the the Diminishing Effect of the Variant Over Time.
 
 Now, let's simulate a diminishing effect that the variant has on a
-person, based on the number of days it takes them
+person, based on the number of days it takes them to convert (if they do
+convert).
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
@@ -211,8 +213,8 @@ value that indicates they will potentially convert in the first day
 distribution), then that person will get the full effect of the lift of
 the variant (i.e. they will get `100%` (top of the curve) of the `7.00%`
 lift). On the other hand, if the person converts 30 days after seeing
-the experiment, they experience very litle lift from the experiment (the
-lift is not quite `0%`, but close.)
+the experiment, they experience very little lift from the experiment
+(the lift is not quite `0%`, but close.)
 
 The the rate of the diminishing effect of an experiment is large
 assumption of this simulation. This is my best guess at a reasonable
@@ -245,7 +247,7 @@ to convert, the less effect the **lift** from experiment has, and the
 closer the conversion rate becomes to the `A` group.
 
 No such effect exists in the `A` group because they maintain the
-baseline conversion rate (there is nothing to diminish.)
+baseline conversion rate (there is nothing to diminish).
 
 By letting people convert e.g. 20-30 days after the experiment, you will
 certainly capture the people who take longer to convert, but the
@@ -271,12 +273,12 @@ they saw the experiment, seems to dilute the conversion rate. Again,
 more and more people are converting at the same conversion rate as the
 `A` group.
 
-Now, `B`'s conversion rate of `20.7%` is a only `3.20%` increase over
-the **true** baseline conversion rate of `20.0%`, and a `3.58%` increase
+Now, `B`'s conversion rate of `20.7%` is a only `3.18%` increase over
+the **true** baseline conversion rate of `20.0%`, and a `3.56%` increase
 over `A`'s conversion rate of `19.9%`, which hasn't changed since the
 last simulation.
 
-The P-value is no longer statistically significant: `0.0674334`
+The P-value is no longer statistically significant: `0.0692969`
 
 Attribution Windows
 -------------------
