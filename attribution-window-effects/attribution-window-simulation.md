@@ -29,9 +29,7 @@ over time, affect the outcome of the experiment?**
 My assumption is that there is a diminishing effect of the variant on
 the person's decision-making process or actions, over time, relative to
 when the person first saw the variant. In other words, for **most** A/B
-experiments, most people will see the variant (e.g. certain button,
-page, or experience that is different from what people in the control
-saw) and the impact that the particular variant gives (i.e. the
+experiments, the impact that the particular variant gives (i.e. the
 **lift**; the increase to the person's probability of converting
 compared to the probability had they been in the control group) is
 highest in the first moments that it is experienced, but that lift
