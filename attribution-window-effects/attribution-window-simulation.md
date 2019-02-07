@@ -210,10 +210,10 @@ simulates the "relative effect" of the Lift of the experiment over time.
 So, for example, if a person in the `B` group is assigned (from above) a
 value that indicates they will potentially convert in the first day
 (remember, there conversion depending on a random draw from the binomial
-distribution), then that person will get the full effect of the Lift of
+distribution), then that person will get the full effect of the lift of
 the variant (i.e. they will get `100%` (top of the curve) of the `7.00%`
-lift. On the other hand, if the person converts 30 days after seeing the
-experiment, they experience very litle lift from the experiment (The
+lift). On the other hand, if the person converts 30 days after seeing
+the experiment, they experience very litle lift from the experiment (the
 lift is not quite `0%`, but close.)
 
 The the rate of the diminishing effect of an experiment is large
@@ -226,10 +226,10 @@ Rate and the Lift in the Variant.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
-This graph shows the conversion rate (i.e. probbility used in the random
-draw from the binomial distribution) for each person according to the
-number of days it took them to convert, relative to when they entered
-the experiment.
+This graph shows the conversion rate (i.e. probability used in the
+random draw from the binomial distribution) for each person according to
+the number of days it took them to convert, relative to when they
+entered the experiment.
 
 Again, people that will potentially convert in the first days of joining
 the experiment are assigned a conversion rate associated with majority
@@ -249,11 +249,11 @@ closer the conversion rate becomes to the `A` group.
 No such effect exists in the `A` group because they maintain the
 baseline conversion rate (there is nothing to diminish.)
 
-But letting people convert e.g. 20-30 days after the experiment, you
-will definitely capture the people who take longer to convert, but the
+By letting people convert e.g. 20-30 days after the experiment, you will
+certainly capture the people who take longer to convert, but the
 *majority* of people who convert are no longer effected by the
 experiment, **so they are now converting at a similar rate as the `A`
-group**\*, which add noise into the experiment.
+group**, which adds noise into the experiment.
 
 Another way of saying this is it's likely that the people who converted
 after 30 days were going to do so anyway, with or without the thing you
@@ -273,22 +273,23 @@ they saw the experiment, seems to dilute the conversion rate. Again,
 more and more people are converting at the same conversion rate as the
 `A` group.
 
-Now, `B`'s conversion rate of `20.7%` is a only `3.18%` increase over
-the **true** baseline conversion rate of `20.0%`, and a `3.56%` increase
+Now, `B`'s conversion rate of `20.7%` is a only `3.20%` increase over
+the **true** baseline conversion rate of `20.0%`, and a `3.58%` increase
 over `A`'s conversion rate of `19.9%`, which hasn't changed since the
 last simulation.
 
-The P-value is no longer statistically significant: `0.0692969`
+The P-value is no longer statistically significant: `0.0674334`
 
 Attribution Windows
 -------------------
 
 So, we've seen the potential impact dimishing lift can have. (And to
-stress this point, I'm suggesting that the effect of dimishing lift is
-always present (although in most cases it seems like a safe assumption),
-or it is always diminishing at my assumed rate, or that the effects of
-it show up consistently in the way we see above. I'm simply showing
-what's possible, based on certain assumptions.)
+stress this point, I'm **not** suggesting that the effect of dimishing
+lift is always present (although in most cases it seems like a safe
+assumption), or that it is always diminishing at the rate I assumed, or
+that the effects of it show up consistently in the way we see above. I'm
+simply showing what's possible, based on certain reasonable
+assumptions.)
 
 But so far, we haven't considered how we can use attribution windows, or
 if we should.

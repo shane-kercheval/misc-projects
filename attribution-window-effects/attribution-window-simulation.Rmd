@@ -288,7 +288,7 @@ data.frame(days_from_experiment_to_conversion=0:30) %>%
 
 Here I'm simply taking the second half of a normal distirubution (i.e. bell-curve) and modifying it to go from 100% to ~0% over 30 days, which simulates the "relative effect" of the Lift of the experiment over time.
 
-So, for example, if a person in the `B` group is assigned (from above) a value that indicates they will potentially convert in the first day (remember, there conversion depending on a random draw from the binomial distribution), then that person will get the full effect of the Lift of the variant (i.e. they will get `100%` (top of the curve) of the ``r percent(simulated_percent_increase_in_b)`` lift. On the other hand, if the person converts 30 days after seeing the experiment, they experience very litle lift from the experiment (The lift is not quite `0%`, but close.)
+So, for example, if a person in the `B` group is assigned (from above) a value that indicates they will potentially convert in the first day (remember, there conversion depending on a random draw from the binomial distribution), then that person will get the full effect of the lift of the variant (i.e. they will get `100%` (top of the curve) of the ``r percent(simulated_percent_increase_in_b)`` lift). On the other hand, if the person converts 30 days after seeing the experiment, they experience very litle lift from the experiment (the lift is not quite `0%`, but close.)
 
 The the rate of the diminishing effect of an experiment is large assumption of this simulation. This is my best guess at a reasonable rate, and depending on the product/service/experiment, this graph will certainly change.
 
@@ -322,7 +322,7 @@ traffic %>%
          color='Variation')
 ```
 
-This graph shows the conversion rate (i.e. probbility used in the random draw from the binomial distribution) for each person according to the number of days it took them to convert, relative to when they entered the experiment.
+This graph shows the conversion rate (i.e. probability used in the random draw from the binomial distribution) for each person according to the number of days it took them to convert, relative to when they entered the experiment.
 
 Again, people that will potentially convert in the first days of joining the experiment are assigned a conversion rate associated with majority of the lift, and people that take a long time to convert, convert at the same rate as the baseline conversion rate (which is the same rate as the `A` group).
 
@@ -350,7 +350,7 @@ traffic %>%
 
 No such effect exists in the `A` group because they maintain the baseline conversion rate (there is nothing to diminish.)
 
-But letting people convert e.g. 20-30 days after the experiment, you will definitely capture the people who take longer to convert, but the *majority* of people who convert are no longer effected by the experiment, **so they are now converting at a similar rate as the `A` group***, which add noise into the experiment. 
+By letting people convert e.g. 20-30 days after the experiment, you will certainly capture the people who take longer to convert, but the *majority* of people who convert are no longer effected by the experiment, **so they are now converting at a similar rate as the `A` group**, which adds noise into the experiment. 
 
 Another way of saying this is it's likely that the people who converted after 30 days were going to do so anyway, with or without the thing you tested (or probably the majority of nauances and brain hacks in the website).
 
@@ -411,7 +411,7 @@ The P-value is no longer statistically significant: ``r prop.test(x=conversions,
 
 ## Attribution Windows
 
-So, we've seen the potential impact dimishing lift can have. (And to stress this point, I'm suggesting that the effect of dimishing lift is always present (although in most cases it seems like a safe assumption), or it is always diminishing at my assumed rate, or that the effects of it show up consistently in the way we see above. I'm simply showing what's possible, based on certain assumptions.)
+So, we've seen the potential impact dimishing lift can have. (And to stress this point, I'm **not** suggesting that the effect of dimishing lift is always present (although in most cases it seems like a safe assumption), or that it is always diminishing at the rate I assumed, or that the effects of it show up consistently in the way we see above. I'm simply showing what's possible, based on certain reasonable assumptions.)
 
 But so far, we haven't considered how we can use attribution windows, or if we should.
 
