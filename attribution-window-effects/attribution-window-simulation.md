@@ -1,5 +1,3 @@
-true
-
 What are the effects of diminishing lift from an A/B test and the use of attribution windows?
 =============================================================================================
 
