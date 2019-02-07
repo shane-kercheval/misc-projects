@@ -457,7 +457,7 @@ traffic %>%
 ### No Attribution Window
 
 ```{r}
-num_days_people_are_still_converting <- max(traffic$day_entered_experiment) + max(traffic$conversion_offset)
+num_days_people_are_still_converting <- max(traffic$day_entered_experiment) + max(traffic$conversion_offset) + 10
 experiment <- data.frame(experiment_day = NULL, variation=NULL, conversions = NULL, trials = NULL)
 
 for(ex_day in 1:num_days_people_are_still_converting) {

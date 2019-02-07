@@ -196,12 +196,12 @@ they saw the experiment, seems to dilute the conversion rate. Again,
 more and more people are converting at the same conversion rate as the
 `A` group.
 
-Now, `B`'s conversion rate of `20.7%` is a only `3.20%` increase over
-the **true** baseline conversion rate of `20.0%`, and a `3.58%` increase
+Now, `B`'s conversion rate of `20.7%` is a only `3.18%` increase over
+the **true** baseline conversion rate of `20.0%`, and a `3.56%` increase
 over `A`'s conversion rate of `19.9%`, which hasn't changed since the
 last simulation.
 
-The P-value is no longer statistically significant: `0.0674334`
+The P-value is no longer statistically significant: `0.0692969`
 
 But this doesn't answer the question of the affects of attribution windows.
 ---------------------------------------------------------------------------
