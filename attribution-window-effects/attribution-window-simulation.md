@@ -38,7 +38,7 @@ experiments, if a person "converts" (e.g. buys your product/service) a
 year after seeing the variant, then that variant had virtually nothing
 to do with conversion. Depnding on the experiment/variant, we can
 probably make similar statements for (perhaps) days, (mostly likely)
-weeks, and (certainly) months after the variant is seen.\*
+weeks, and (certainly) months after the variant is seen.(++)
 
 The concern is that the longer you give people to convert, the less
 **lift** there is, and you're essentially including people who are, at
@@ -69,7 +69,7 @@ is present in both variations, in an equal way).
 
 ------------------------------------------------------------------------
 
-\*\*Perhaps this means that A/B testing is inherently targeting people
+++*Perhaps this means that A/B testing is inherently targeting people
 that either A) more suspectible to pschogolical manipulation (e.g. mind
 hacks, high pressure sales tactics, buying things based on whether it's
 sunny or dark outside, etc.) and/or B) wanting to make an immediately
@@ -82,7 +82,7 @@ example, you've completely redesigned your product and that new
 experience does have a long lasting impact on the customers decision. In
 those cases, the lift is high enough that any concerns we deal with here
 are probably going to disappear from the large lift. I assume that's not
-the majority of A/B tests.\*
+the majority of A/B tests.*
 
 ------------------------------------------------------------------------
 
