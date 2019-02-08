@@ -26,15 +26,15 @@ A few definitions:
 - `variant`: refers to either the `B` group, or the thing you show to the `B` group
 - `variation`: refers to either the `A` (`control`) group or `B` (`variant`).
 - `lift`: the percent increase from the `A` group to the `B` based on the thing you are testing in the `B` group (i.e. the `variant`)
-- `attribution window` the maximum number of days you allow conversions to be attributed to the corresponding variation based on when the person entered the experiment. So person `x` enters the experiment on day `y`. With a `7-day` attribution window, we would only count `x`'s conversion if the conversion event took place within `7` days of `y`. This would be the same for both variations.
+- `attribution window` the maximum number of days you allow conversions to be attributed to the corresponding variation based on when the person entered the experiment. So, person `x` enters the experiment on day `y`. With a `7-day` attribution window, we would only count `x`'s conversion if the conversion event took place within `7` days of `y`. This would be the same for both variations.
 
 ## There are two questions when running A/B tests that don't seem to be discussed much.
 
 The first question is: **How does the diminishing lift of the variant, over time, affect the outcome of the experiment?**
 
-My assumption is that there is a diminishing effect of the variant on the person's decision-making process or actions, over time, relative to when the person first saw the variant. In other words, for **most** A/B experiments, the impact that the particular variant gives (i.e. the **lift**; the increase to the person's probability of converting compared to the probability had they been in the control group) is highest in the first moments that it is experienced, but that lift (exponentially?) decreases over time. At the extreme, for most experiments, if a person "converts" (e.g. buys your product/service) a year after seeing the variant, then that variant had virtually nothing to do with conversion. Depending on the experiment/variant, we can probably make similar statements for (perhaps) days, (mostly likely) weeks, and (certainly) months after the variant is seen.(++)
+My assumption is that there is a diminishing effect of the variant on the person's decision-making process or actions, over time, relative to when the person first saw the variant. In other words, for **most** A/B experiments, the impact that the variant gives (i.e. the **lift**; the increase to the person's probability of converting compared to the probability had they been in the control group) is highest in the first moments that it is experienced, but that lift (exponentially?) decreases over time. At the extreme, for most experiments, if a person "converts" (e.g. buys your product/service) a year after seeing the variant, then that variant had virtually nothing to do with conversion. Depending on the experiment/variant, we can probably make similar statements for (perhaps) days, (mostly likely) weeks, and (certainly) months after the variant is seen.(++)
 
-The potential concern is that the longer you give people to convert, the less **lift** there is, and you're essentially including people who are, at that point, converting at the same rate as the control group. Does this introduce noise into your experiment? And, if so, can we use an attributionw window to reduce the noise? Or will the attribution window also reduce the signal?
+The potential concern is that the longer you give people to convert, the less **lift** there is, and you're essentially including people who are, at that point, converting at the same rate as the control group. Does this introduce noise into your experiment? And, if so, can we use an attribution window to reduce the noise? Or will the attribution window also reduce the signal?
 
 Which introduces the next question: **Should I use an attribution window, and if so, what should I set the window to?**
 
@@ -46,7 +46,7 @@ One hypothesis is, the fact that some people get more time and some people get l
 
 ---
 
-++*Perhaps this means that A/B testing is inherently targeting people that either A) more suspectible to pschogolical manipulation (e.g. mind hacks, high pressure sales tactics, buying things based on whether it's sunny or dark outside, etc.) and/or B) wanting to make an immediately decision C) impulsive buyers. At the very least, it seems like the target segment of A/B tests is the subpopulation of the target market that takes less time to make decisions and/or has a more immediate need. But, that's a direction I don't want to go right now. The caveat to this is that, there are of course experiments that you run where, for example, you've completely redesigned your product and that new experience does have a long lasting impact on the customers decision. In those cases, the lift is high enough that any concerns we deal with here are probably going to disappear from the large lift. I assume that's not the majority of A/B tests.*
+++*Perhaps this means that A/B testing is inherently targeting people that either A) more susceptible to psychological manipulation (e.g. mind hacks, high pressure sales tactics, buying things based on whether it's sunny or dark outside, etc.) and/or B) wanting to make an immediately decision C) impulsive buyers. At the very least, it seems like the target segment of A/B tests is the subpopulation of the target market that takes less time to make decisions and/or has a more immediate need. But, that's a direction I don't want to go right now. The caveat to this is that, there are of course experiments that you run where, for example, you've completely redesigned your product and that new experience does have a long lasting impact on the customers decision. In those cases, the lift is high enough that any concerns we deal with here are probably going to disappear from the large lift. I assume that's not the majority of A/B tests.*
 
 ---
 
@@ -258,7 +258,7 @@ traffic %>%
          fill='Conversion Rate')
 ```
 
-Everyone in the simulation is assigned a random number (based on a modified Gamma distribution) that represents the number of days that will take to convert **if they convert**. They are assigned the number before the binomial distribution determines if they convert. The reason for this is technical and intuitive. The technical reason is that the probability given to the binomial distribution will be based on the final probability assigned to the person which will be based on the number of days they are assigned and the diminishing effect calculated below. One intuitive reason (maybe a justification), is that this number incorporates a lot of assumptions and characteristics about each person that we can't directly simulate: the buying impluse of the person, the degree of immediate need, the person's general thoughtfulness and scrutiny of making a decision (e.g. purchase), susceptibility to psychological "growth hacks", indecisiveness, and so on. These characteristics affect how long it will take them to convert and, either, as a result, or in addition to, how much they will be influenced by the variant.
+Everyone in the simulation is assigned a random number (based on a modified Gamma distribution) that represents the number of days that will take to convert **if they convert**. They are assigned the number before the binomial distribution determines if they convert. The reason for this is technical and intuitive. The technical reason is that the probability given to the binomial distribution will be based on the final probability assigned to the person which will be based on the number of days they are assigned and the diminishing effect calculated below. One intuitive reason (maybe a justification), is that this number incorporates a lot of assumptions and characteristics about each person that we can't directly simulate: the buying impulse of the person, the degree of immediate need, the person's general thoughtfulness and scrutiny of making a decision (e.g. purchase), susceptibility to psychological "growth hacks", indecisiveness, and so on. These characteristics affect how long it will take them to convert and, either, as a result, or in addition to, how much they will be influenced by the variant.
 
 ### Simulate the the Diminishing Effect of the Variant Over Time.
 
@@ -286,11 +286,11 @@ data.frame(days_from_experiment_to_conversion=0:30) %>%
          x='Number of Days from Experiment to Conversion Event.')
 ```
 
-Here I'm simply taking the second half of a normal distirubution (i.e. bell-curve) and modifying it to go from 100% to ~0% over 30 days, which simulates the "relative effect" of the Lift of the experiment over time.
+Here I'm simply taking the second half of a normal distribution (i.e. bell-curve) and modifying it to go from 100% to ~0% over 30 days, which simulates the "relative effect" of the Lift of the experiment over time.
 
 So, for example, if a person in the `B` group is assigned (from above) a value that indicates they will potentially convert in the first day (remember, there conversion depending on a random draw from the binomial distribution), then that person will get the full effect of the lift of the variant (i.e. they will get `100%` (top of the curve) of the ``r percent(simulated_percent_increase_in_b)`` lift). On the other hand, if the person converts 30 days after seeing the experiment, they experience very little lift from the experiment (the lift is not quite `0%`, but close.)
 
-The the rate of the diminishing effect of an experiment is large assumption of this simulation. This is my best guess at a reasonable rate, and depending on the product/service/experiment, this graph will certainly change.
+The rate of the diminishing effect of an experiment is large assumption of this simulation. This is my best guess at a reasonable rate, and depending on the product/service/experiment, this graph will certainly change.
 
 Now let's apply the "Percent of Lift Applied" to the Baseline Conversion Rate and the Lift in the Variant.
 
@@ -326,7 +326,7 @@ This graph shows the conversion rate (i.e. probability used in the random draw f
 
 Again, people that will potentially convert in the first days of joining the experiment are assigned a conversion rate associated with majority of the lift, and people that take a long time to convert, convert at the same rate as the baseline conversion rate (which is the same rate as the `A` group).
 
-We can take our graph from above and show how the diminshed effect influences the conversion rate of the people assigned to various days.
+We can take our graph from above and show how the diminished effect influences the conversion rate of the people assigned to various days.
 
 ```{r}
 traffic %>%
@@ -352,11 +352,11 @@ No such effect exists in the `A` group because they maintain the baseline conver
 
 By letting people convert e.g. 20-30 days after the experiment, you will certainly capture the people who take longer to convert, but the *majority* of people who convert are no longer effected by the experiment, **so they are now converting at a similar rate as the `A` group**, which adds noise into the experiment. 
 
-Another way of saying this is it's likely that the people who converted after 30 days were going to do so anyway, with or without the thing you tested (or probably the majority of nauances and brain hacks in the website).
+Another way of saying this is it's likely that the people who converted after 30 days were going to do so anyway, with or without the thing you tested (or probably many of the nuances and brain hacks in the website).
 
 ## Update Conversion Rates, with Diminishing Lift
 
-So let's look at the results of the A/B test with the updated conversion rates.
+So, let's look at the results of the A/B test with the updated conversion rates.
 
 ```{r}
 set.seed(seed_conversion)
@@ -405,13 +405,13 @@ traffic %>%
 
 Including the people in the experiment that converted many days after they saw the experiment, seems to dilute the conversion rate. Again, more and more people are converting at the same conversion rate as the `A` group.
 
-Now, `B`'s conversion rate of ``r percent(b_conversion_rate)`` is a only ``r percent(b_percent_increase_over_baseline)`` increase over the **true** baseline conversion rate of ``r percent(baseline_conversion_rate)``, and a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``, which hasn't changed since the last simulation.
+Now, `B`'s conversion rate of ``r percent(b_conversion_rate)`` is only a ``r percent(b_percent_increase_over_baseline)`` increase over the **true** baseline conversion rate of ``r percent(baseline_conversion_rate)``, and a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``, which hasn't changed since the last simulation.
 
 The P-value is no longer statistically significant: ``r prop.test(x=conversions, n=trials)$p.value``
 
 ## Attribution Windows
 
-So, we've seen the potential impact dimishing lift can have. (And to stress this point, I'm **not** suggesting that the effect of dimishing lift is always present (although in most cases it seems like a safe assumption), or that it is always diminishing at the rate I assumed, or that the effects of it show up consistently in the way we see above. I'm simply showing what's possible, based on certain reasonable assumptions.)
+So, we've seen the potential impact diminishing lift can have. (And to stress this point, I'm **not** suggesting that the effect of diminishing lift is always present (although in most cases it seems like a safe assumption), or that it is always diminishing at the rate I assumed, or that the effects of it show up consistently in the way we see above. I'm simply showing what's possible, based on certain reasonable assumptions.)
 
 But so far, we haven't considered how we can use attribution windows, or if we should.
 
@@ -419,7 +419,7 @@ But so far, we haven't considered how we can use attribution windows, or if we s
 attribution_window_days <- 7
 ```
 
-Let's simulate a `r attribution_window_days`-day attribution window. In other wrods, we will only count conversion events that happen within `r attribution_window_days` days from the day that the person entered the experiment.
+Let's simulate a `r attribution_window_days`-day attribution window. In other word, we will only count conversion events that happen within `r attribution_window_days` days from the day that the person entered the experiment.
 
 ```{r}
 traffic <- traffic %>%
@@ -461,7 +461,7 @@ traffic %>%
 
 The P-value is once again statistically significant: ``r prop.test(x=conversions, n=trials)$p.value``. (Although, to be fair, it might not have been if we didn't have a sufficient sample size.)
 
-In this case, it appears we have reduced enough of the noise from the effects of the dimiished lift and captured enough signal.
+In this case, it appears we have reduced enough of the noise from the effects of the diminished lift and captured enough signal.
 
 Now, `B`'s conversion rate is only ``r percent(b_conversion_rate)`` because we are only counting the people who converted within 7-days from when they entered they experiment. But, it is a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
 
