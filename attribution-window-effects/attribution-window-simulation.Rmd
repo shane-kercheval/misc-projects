@@ -46,7 +46,7 @@ One hypothesis is, the fact that some people get more time and some people get l
 
 ---
 
-++*Perhaps this means that A/B testing is inherently targeting people that either A) more susceptible to psychological manipulation (e.g. mind hacks, high pressure sales tactics, buying things based on whether it's sunny or dark outside, etc.) and/or B) wanting to make an immediately decision C) impulsive buyers. At the very least, it seems like the target segment of A/B tests is the subpopulation of the target market that takes less time to make decisions and/or has a more immediate need. But, that's a direction I don't want to go right now. The caveat to this is that, there are of course experiments that you run where, for example, you've completely redesigned your product and that new experience does have a long lasting impact on the customers decision. In those cases, the lift is high enough that any concerns we deal with here are probably going to disappear from the large lift. I assume that's not the majority of A/B tests.*
+++*Perhaps this means that A/B testing is inherently targeting people that either A) more susceptible to psychological manipulation (e.g. mind hacks, high pressure sales tactics, buying things based on whether it's sunny or dark outside, etc.) and/or B) wanting to make an immediately decision C) impulsive buyers. At the very least, it seems like the target segment of A/B tests is the subpopulation of the target market that takes less time to make decisions and/or has a more immediate need. But, that's a direction I don't want to go right now. The caveat to this is that, there are of course experiments that you run where, for example, you've completely redesigned your product and that new experience does have a long-lasting impact on the customers' decision. In those cases, the lift is high enough that any concerns we deal with here are probably going to disappear from the large lift. I assume that's not the case for the majority of A/B tests.*
 
 ---
 
@@ -95,7 +95,7 @@ traffic$baseline_conversion_rate <- baseline_conversion_rate
 Now, we'll give everyone a baseline conversion rate of ``r percent(baseline_conversion_rate)``.
 
 Specifically, we'll assign each person a conversion rate (i.e. probability) then take a random sample from
-the binomial distribution using that probabilty to determine if that person converted.
+the binomial distribution using that probability to determine if that person converted.
 
 Let's simulate the conversion for each person and see the overall conversion rates for each variation.
 
@@ -189,7 +189,7 @@ traffic %>%
     theme_light()
 ```
 
-With the new conersion rate (and due to random varaiation i.e. random sampling from binomial distribution), `B`'s conversion rate of ``r percent(b_conversion_rate)`` is a ``r percent(b_percent_increase_over_baseline)`` increase over the **true** baseline conversion rate of ``r percent(baseline_conversion_rate)``, and a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
+With the new conversion rate (and due to random variation i.e. random sampling from binomial distribution), `B`'s conversion rate of ``r percent(b_conversion_rate)`` is a ``r percent(b_percent_increase_over_baseline)`` increase over the **true** baseline conversion rate of ``r percent(baseline_conversion_rate)``, and a ``r percent(b_percent_increase_over_a)`` increase over `A`'s conversion rate of ``r percent(a_conversion_rate)``.
 
 The P-value is now ``r prop.test(x=conversions, n=trials)$p.value`` and there is a statistically significant difference between the variations.
 
@@ -197,7 +197,7 @@ The P-value is now ``r prop.test(x=conversions, n=trials)$p.value`` and there is
 
 These conversion rates assume that everyone that has converted, have been given any amount of time to convert, **and regardless of how long it took them to converted (relative to when they entered the experiment), they had the same lift from the experiment** (specifically, everyone in the `B` group had a ``r percent(baseline_conversion_rate + (baseline_conversion_rate * simulated_percent_increase_in_b))`` probability of converting (``r percent(baseline_conversion_rate)`` + (``r percent(baseline_conversion_rate)`` * ``r percent(simulated_percent_increase_in_b)``)), which was used to pull a random sample from the binomial distribution to determine if they did convert).
 
-This doesn't take into account:
+This doesn't consider:
 
 - the fact that people take different lengths of time to convert (relative to when they entered into the experiment) and 
 - **the effects that that the A/B test has on a person, or group of people, diminishes over time.** It cannot be assumed that the effect of seeing a certain button, or certain design, or a certain experience, will have the same effect in that instant vs. 1 hour later vs. 1 day later vs. 30 days later. The effect of that "thing" on a person's decision or action will almost always, for almost everyone, diminish over time.
@@ -469,7 +469,7 @@ Now, `B`'s conversion rate is only ``r percent(b_conversion_rate)`` because we a
 
 ## P-Values and Confidence Intervals, Over Time
 
-What if we simulate p-value and converison rate over time, with and without the attribution window?
+What if we simulate p-value and conversion rate over time, with and without the attribution window?
 
 ```{r}
 set.seed(43)
@@ -734,5 +734,5 @@ temp %>%
 
 # Cautions
 
-- The effects seen from the diminishing lift and the attribution windows are based on many assumptions, including the distribution of days from entering into the experiment to conerting, and the rate/distribution of diminishing effect over time. There is also random variation in the simulation. It's possible that in other cases, other types of random variation will not pick up the same patterns.
-- I assumed the baseline conversion rate remains the same and is not dependent on the number of days it took to convert. This was meant to be a simplifying assumption. In reality, the longer it takes people to convert, the lower probability they probabily have of converting. However, the same decrease in probabily will be present in both the control and variant groups. The major issue shown above is that the variant (`B`) group starts out at a higher probabilty, **relative** to the `A` group, and then over time **converges** to the `A` group's conversion rate (i.e. the baseline). If the baseline changes over time, you will still get the same **relative** start point and **convergence**. On the other hand, if we did account for the baseline conversion rate's potential decrease over time, we might see less conversion events in the areas that have similar conversion rates as the A group, and the result would be that we are over-estimating the impact (based on all the assumptions above) of the effects shown above.. Or... is this already accounted from the fact that there is, overall, a lot less people converting at that time. Yeah, now that i think about it. That's dumb, delete.
+- The effects seen from the diminishing lift and the attribution windows are based on many assumptions, including the distribution of days from entering into the experiment to converting, and the rate/distribution of diminishing effect over time. There is also random variation in the simulation. It's possible that in other cases, other types of random variation will not pick up the same patterns.
+- I assumed the baseline conversion rate remains the same and is not dependent on the number of days it took to convert. This was meant to be a simplifying assumption. In reality, the longer it takes people to convert, the lower probability they probability have of converting. However, the same decrease in probability will be present in both the control and variant groups. The major issue shown above is that the variant (`B`) group starts out at a higher probability, **relative** to the `A` group, and then over time **converges** to the `A` group's conversion rate (i.e. the baseline). If the baseline changes over time, you will still get the same **relative** start point and **convergence**. On the other hand, if we did account for the baseline conversion rate's potential decrease over time, we might see less conversion events in the areas that have similar conversion rates as the A group, and the result would be that we are over-estimating the impact (based on all the assumptions above) of the effects shown above.. Or... is this already accounted from the fact that there is, overall, a lot less people converting at that time. Yeah, now that i think about it. That's dumb, delete.

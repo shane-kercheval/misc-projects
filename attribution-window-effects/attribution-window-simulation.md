@@ -1,3 +1,5 @@
+true
+
 What are the effects of diminishing lift from an A/B test and the use of attribution windows?
 =============================================================================================
 
@@ -13,7 +15,7 @@ A few definitions:
     the thing you are testing in the `B` group (i.e. the `variant`)
 -   `attribution window` the maximum number of days you allow
     conversions to be attributed to the corresponding variation based on
-    when the person entered the experiment. So person `x` enters the
+    when the person entered the experiment. So, person `x` enters the
     experiment on day `y`. With a `7-day` attribution window, we would
     only count `x`'s conversion if the conversion event took place
     within `7` days of `y`. This would be the same for both variations.
@@ -27,22 +29,22 @@ over time, affect the outcome of the experiment?**
 My assumption is that there is a diminishing effect of the variant on
 the person's decision-making process or actions, over time, relative to
 when the person first saw the variant. In other words, for **most** A/B
-experiments, the impact that the particular variant gives (i.e. the
-**lift**; the increase to the person's probability of converting
-compared to the probability had they been in the control group) is
-highest in the first moments that it is experienced, but that lift
-(exponentially?) decreases over time. At the extreme, for most
-experiments, if a person "converts" (e.g. buys your product/service) a
-year after seeing the variant, then that variant had virtually nothing
-to do with conversion. Depending on the experiment/variant, we can
-probably make similar statements for (perhaps) days, (mostly likely)
-weeks, and (certainly) months after the variant is seen.(++)
+experiments, the impact that the variant gives (i.e. the **lift**; the
+increase to the person's probability of converting compared to the
+probability had they been in the control group) is highest in the first
+moments that it is experienced, but that lift (exponentially?) decreases
+over time. At the extreme, for most experiments, if a person "converts"
+(e.g. buys your product/service) a year after seeing the variant, then
+that variant had virtually nothing to do with conversion. Depending on
+the experiment/variant, we can probably make similar statements for
+(perhaps) days, (mostly likely) weeks, and (certainly) months after the
+variant is seen.(++)
 
 The potential concern is that the longer you give people to convert, the
 less **lift** there is, and you're essentially including people who are,
 at that point, converting at the same rate as the control group. Does
 this introduce noise into your experiment? And, if so, can we use an
-attributionw window to reduce the noise? Or will the attribution window
+attribution window to reduce the noise? Or will the attribution window
 also reduce the signal?
 
 Which introduces the next question: **Should I use an attribution
@@ -69,7 +71,7 @@ is present in both variations, in an equal way).
 ------------------------------------------------------------------------
 
 ++*Perhaps this means that A/B testing is inherently targeting people
-that either A) more suspectible to pschogolical manipulation (e.g. mind
+that either A) more susceptible to psychological manipulation (e.g. mind
 hacks, high pressure sales tactics, buying things based on whether it's
 sunny or dark outside, etc.) and/or B) wanting to make an immediately
 decision C) impulsive buyers. At the very least, it seems like the
@@ -78,10 +80,10 @@ that takes less time to make decisions and/or has a more immediate need.
 But, that's a direction I don't want to go right now. The caveat to this
 is that, there are of course experiments that you run where, for
 example, you've completely redesigned your product and that new
-experience does have a long lasting impact on the customers decision. In
-those cases, the lift is high enough that any concerns we deal with here
-are probably going to disappear from the large lift. I assume that's not
-the majority of A/B tests.*
+experience does have a long-lasting impact on the customers' decision.
+In those cases, the lift is high enough that any concerns we deal with
+here are probably going to disappear from the large lift. I assume
+that's not the case for the majority of A/B tests.*
 
 ------------------------------------------------------------------------
 
@@ -105,7 +107,7 @@ Now, we'll give everyone a baseline conversion rate of `20.0%`.
 
 Specifically, we'll assign each person a conversion rate (i.e.
 probability) then take a random sample from the binomial distribution
-using that probabilty to determine if that person converted.
+using that probability to determine if that person converted.
 
 Let's simulate the conversion for each person and see the overall
 conversion rates for each variation.
@@ -127,7 +129,7 @@ Now, let's simulate everyone in the `B` group having a `7.00%` increase
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
-With the new conersion rate (and due to random varaiation i.e. random
+With the new conversion rate (and due to random variation i.e. random
 sampling from binomial distribution), `B`'s conversion rate of `21.3%`
 is a `6.05%` increase over the **true** baseline conversion rate of
 `20.0%`, and a `6.43%` increase over `A`'s conversion rate of `19.9%`.
@@ -146,7 +148,7 @@ everyone in the `B` group had a `21.4%` probability of converting
 (`20.0%` + (`20.0%` \* `7.00%`)), which was used to pull a random sample
 from the binomial distribution to determine if they did convert).
 
-This doesn't take into account:
+This doesn't consider:
 
 -   the fact that people take different lengths of time to convert
     (relative to when they entered into the experiment) and
@@ -185,7 +187,7 @@ final probability assigned to the person which will be based on the
 number of days they are assigned and the diminishing effect calculated
 below. One intuitive reason (maybe a justification), is that this number
 incorporates a lot of assumptions and characteristics about each person
-that we can't directly simulate: the buying impluse of the person, the
+that we can't directly simulate: the buying impulse of the person, the
 degree of immediate need, the person's general thoughtfulness and
 scrutiny of making a decision (e.g. purchase), susceptibility to
 psychological "growth hacks", indecisiveness, and so on. These
@@ -201,7 +203,7 @@ convert).
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
-Here I'm simply taking the second half of a normal distirubution (i.e.
+Here I'm simply taking the second half of a normal distribution (i.e.
 bell-curve) and modifying it to go from 100% to ~0% over 30 days, which
 simulates the "relative effect" of the Lift of the experiment over time.
 
@@ -214,10 +216,10 @@ lift). On the other hand, if the person converts 30 days after seeing
 the experiment, they experience very little lift from the experiment
 (the lift is not quite `0%`, but close.)
 
-The the rate of the diminishing effect of an experiment is large
-assumption of this simulation. This is my best guess at a reasonable
-rate, and depending on the product/service/experiment, this graph will
-certainly change.
+The rate of the diminishing effect of an experiment is large assumption
+of this simulation. This is my best guess at a reasonable rate, and
+depending on the product/service/experiment, this graph will certainly
+change.
 
 Now let's apply the "Percent of Lift Applied" to the Baseline Conversion
 Rate and the Lift in the Variant.
@@ -235,7 +237,7 @@ of the lift, and people that take a long time to convert, convert at the
 same rate as the baseline conversion rate (which is the same rate as the
 `A` group).
 
-We can take our graph from above and show how the diminshed effect
+We can take our graph from above and show how the diminished effect
 influences the conversion rate of the people assigned to various days.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-7-1.png)
@@ -255,14 +257,13 @@ group**, which adds noise into the experiment.
 
 Another way of saying this is it's likely that the people who converted
 after 30 days were going to do so anyway, with or without the thing you
-tested (or probably the majority of nauances and brain hacks in the
-website).
+tested (or probably many of the nuances and brain hacks in the website).
 
 Update Conversion Rates, with Diminishing Lift
 ----------------------------------------------
 
-So let's look at the results of the A/B test with the updated conversion
-rates.
+So, let's look at the results of the A/B test with the updated
+conversion rates.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-8-1.png)
 
@@ -271,18 +272,18 @@ they saw the experiment, seems to dilute the conversion rate. Again,
 more and more people are converting at the same conversion rate as the
 `A` group.
 
-Now, `B`'s conversion rate of `20.7%` is a only `3.18%` increase over
-the **true** baseline conversion rate of `20.0%`, and a `3.56%` increase
+Now, `B`'s conversion rate of `20.7%` is only a `3.20%` increase over
+the **true** baseline conversion rate of `20.0%`, and a `3.58%` increase
 over `A`'s conversion rate of `19.9%`, which hasn't changed since the
 last simulation.
 
-The P-value is no longer statistically significant: `0.0692969`
+The P-value is no longer statistically significant: `0.0674334`
 
 Attribution Windows
 -------------------
 
-So, we've seen the potential impact dimishing lift can have. (And to
-stress this point, I'm **not** suggesting that the effect of dimishing
+So, we've seen the potential impact diminishing lift can have. (And to
+stress this point, I'm **not** suggesting that the effect of diminishing
 lift is always present (although in most cases it seems like a safe
 assumption), or that it is always diminishing at the rate I assumed, or
 that the effects of it show up consistently in the way we see above. I'm
@@ -292,7 +293,7 @@ assumptions.)
 But so far, we haven't considered how we can use attribution windows, or
 if we should.
 
-Let's simulate a 7-day attribution window. In other wrods, we will only
+Let's simulate a 7-day attribution window. In other word, we will only
 count conversion events that happen within 7 days from the day that the
 person entered the experiment.
 
@@ -303,7 +304,7 @@ The P-value is once again statistically significant: `0.0015524`.
 sufficient sample size.)
 
 In this case, it appears we have reduced enough of the noise from the
-effects of the dimiished lift and captured enough signal.
+effects of the diminished lift and captured enough signal.
 
 Now, `B`'s conversion rate is only `10.7%` because we are only counting
 the people who converted within 7-days from when they entered they
@@ -319,7 +320,7 @@ required to run the test.**
 P-Values and Confidence Intervals, Over Time
 --------------------------------------------
 
-What if we simulate p-value and converison rate over time, with and
+What if we simulate p-value and conversion rate over time, with and
 without the attribution window?
 
 ### No Attribution Window
@@ -359,7 +360,7 @@ Cautions
 
 -   The effects seen from the diminishing lift and the attribution
     windows are based on many assumptions, including the distribution of
-    days from entering into the experiment to conerting, and the
+    days from entering into the experiment to converting, and the
     rate/distribution of diminishing effect over time. There is also
     random variation in the simulation. It's possible that in other
     cases, other types of random variation will not pick up the same
@@ -367,18 +368,19 @@ Cautions
 -   I assumed the baseline conversion rate remains the same and is not
     dependent on the number of days it took to convert. This was meant
     to be a simplifying assumption. In reality, the longer it takes
-    people to convert, the lower probability they probabily have of
-    converting. However, the same decrease in probabily will be present
-    in both the control and variant groups. The major issue shown above
-    is that the variant (`B`) group starts out at a higher probabilty,
-    **relative** to the `A` group, and then over time **converges** to
-    the `A` group's conversion rate (i.e. the baseline). If the baseline
-    changes over time, you will still get the same **relative** start
-    point and **convergence**. On the other hand, if we did account for
-    the baseline conversion rate's potential decrease over time, we
-    might see less conversion events in the areas that have similar
-    conversion rates as the A group, and the result would be that we are
-    over-estimating the impact (based on all the assumptions above) of
-    the effects shown above.. Or... is this already accounted from the
-    fact that there is, overall, a lot less people converting at that
-    time. Yeah, now that i think about it. That's dumb, delete.
+    people to convert, the lower probability they probability have of
+    converting. However, the same decrease in probability will be
+    present in both the control and variant groups. The major issue
+    shown above is that the variant (`B`) group starts out at a higher
+    probability, **relative** to the `A` group, and then over time
+    **converges** to the `A` group's conversion rate (i.e. the
+    baseline). If the baseline changes over time, you will still get the
+    same **relative** start point and **convergence**. On the other
+    hand, if we did account for the baseline conversion rate's potential
+    decrease over time, we might see less conversion events in the areas
+    that have similar conversion rates as the A group, and the result
+    would be that we are over-estimating the impact (based on all the
+    assumptions above) of the effects shown above.. Or... is this
+    already accounted from the fact that there is, overall, a lot less
+    people converting at that time. Yeah, now that i think about it.
+    That's dumb, delete.
