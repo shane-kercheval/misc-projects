@@ -142,7 +142,7 @@ What we've done so far has simulated an experiment in which there was **no** cha
 simulated_percent_increase_in_b <- 0.07
 ```
 
-### Simualte ``r percent(simulated_percent_increase_in_b)`` Increase in Group B
+### Simulate ``r percent(simulated_percent_increase_in_b)`` Increase in Group B
 
 Now, let's simulate everyone in the `B` group having a ``r percent(simulated_percent_increase_in_b)`` increase (due from the effects of the new variant we are testing out.)
 

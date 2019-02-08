@@ -122,7 +122,7 @@ What we've done so far has simulated an experiment in which there was
 **no** change in the `A` group vs the `B` group. It was an experiment
 that was equivalent to an `A`/`A` test.
 
-### Simualte `7.00%` Increase in Group B
+### Simulate `7.00%` Increase in Group B
 
 Now, let's simulate everyone in the `B` group having a `7.00%` increase
 (due from the effects of the new variant we are testing out.)
