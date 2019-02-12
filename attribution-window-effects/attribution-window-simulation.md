@@ -362,12 +362,6 @@ the people who converted within 7-days from when they entered they
 experiment. But, it is a `9.02%` increase over `A`'s conversion rate of
 `9.71%`.
 
-**The downside to using attribution-windows is that, because your
-calculated conversion rate is lower (and depending on the size of the
-window, it could be substantially lower), the sample size required to
-reach statistical significance increases, along with the amount of time
-required to run the test.**
-
 Conclusion
 ----------
 
@@ -383,22 +377,22 @@ Also under certain scenarios, an attribution window can help extract the
 signal (of the immediate lift) and filter out the noise (of the
 diminished lift).
 
-And to stress this point, I'm **not** suggesting that the effect of
-diminishing lift is always present (although in most cases it seems like
-a safe assumption), or that it is always diminishing at the
-rate/distribution I assumed, or that the effects of it show up
-consistently in the way we see above. I'm simply showing what's
-possible, based on certain reasonable assumptions. I also don't explore
-possible ways to analyze A/B test data in general and determine the
-degree that diminishing lift affects the data or how to choose possible
-attribution windows. In addition, follow up research could include
-running the above scenarios many times (e.g. with different random
-seeds) to see how often the above issues occur, even with the same
-assumptions. Further work could also research the effects that
-attribution-windows have on conversion rates and, therefore, on the
-required sample-sizes (i.e. lower conversion rates recognized from the
-attribution window may lead to larger sample-sizes required, but larger
-lifts detected may lead to smaller sample-sizes required).
+Please note: I'm **not** suggesting that the effect of diminishing lift
+is always present (although in most cases it seems like a safe
+assumption), or that it is always diminishing at the rate/distribution I
+assumed, or that the effects of it show up consistently in the way we
+see above. I'm simply showing what's possible, based on certain
+reasonable assumptions. I also don't explore possible ways to analyze
+A/B test data in general and determine the degree that diminishing lift
+affects the data or how to choose possible attribution windows. In
+addition, follow up research could include running the above scenarios
+many times (e.g. with different random seeds) to see how often the above
+issues occur, even with the same assumptions. Further work could also
+research the effects that attribution-windows have on conversion rates
+and, therefore, on the required sample-sizes (i.e. lower conversion
+rates recognized from the attribution window may lead to larger
+sample-sizes required, but larger lifts detected may lead to smaller
+sample-sizes required).
 
 Appendix (WORK IN PROGRESS - PLEASE IGNORE FOR NOW)
 ===================================================
