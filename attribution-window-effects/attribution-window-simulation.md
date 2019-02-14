@@ -1,3 +1,5 @@
+true
+
 A/B Tests, Diminishing Lift, & Attribution Windows
 ==================================================
 
@@ -147,11 +149,13 @@ affect the feasibility of running the A/B test.*
 Simulate A/B Groups
 -------------------
 
-We'll create `40,000` trials in experiment, roughly `20,000` per
-randomized variation.
+Let's simulate a 60-day experiment where ~`1,333` people enter the
+experiment daily, giving a total of about `80,000` are part of the
+experiment after 60 days.
 
 Then we'll randomly assign people into group `A` or group `B`, based on
-a random number generator.
+a random number generator, which will be roughly `40,000` per randomized
+variation.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/create_traffic-1.png)
 
@@ -160,7 +164,7 @@ Simulate Conversion Rates
 
 ### Simulate No Change
 
-Now, we'll give everyone a baseline conversion rate of `20.0%`.
+Now, we'll give everyone a baseline conversion rate of `10.0%`.
 
 Specifically, we'll assign each person a conversion rate (i.e.
 probability), then take a random sample from the binomial distribution
@@ -173,7 +177,7 @@ conversion rates for each variation.
 
 We can see that the conversion rate for each group is roughly the same.
 Using the Chi-Square test for proportions, we get a p-value of
-`0.8883228`, so there is no statistical difference between the two
+`0.4750029`, so there is no statistical difference between the two
 conversion rates.
 
 So far, we've simulated an experiment in which there was **no** change
@@ -185,14 +189,14 @@ equivalent to an `A`/`A` test.
 Now, let's simulate everyone in the `B` group having a `7.00%` increase
 (due from the effects of the new variant we are testing out.)
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-2-1.png)
 
 With the new conversion rate (and due to random variation i.e. random
-sampling from binomial distribution), `B`'s conversion rate of `21.3%`
-is a `6.05%` increase over the **true** baseline conversion rate of
-`20.0%`, and a `6.43%` increase over `A`'s conversion rate of `19.9%`.
+sampling from binomial distribution), `B`'s conversion rate of `10.8%`
+is a `7.36%` increase over the **true** baseline conversion rate of
+`10.0%`, and a `5.15%` increase over `A`'s conversion rate of `10.2%`.
 
-The P-value is now `0.0007539` and there is a statistically significant
+The P-value is now `0.0101342` and there is a statistically significant
 difference between the variations.
 
 But, here's the problem.
@@ -202,8 +206,8 @@ These conversion rates assume that everyone who has converted, have been
 given any amount of time to convert, **and regardless of how long it
 took them to convert (relative to when they entered the experiment),
 they had the same lift from the experiment** (specifically, everyone in
-the `B` group had a `21.4%` probability of converting (`20.0%` +
-(`20.0%` \* `7.00%`)), which was used to pull a random sample from the
+the `B` group had a `10.7%` probability of converting (`10.0%` +
+(`10.0%` \* `7.00%`)), which was used to pull a random sample from the
 binomial distribution to determine if they converted).
 
 This doesn't consider:
@@ -232,7 +236,7 @@ over time**.
 
 ### Simulate the Number of Days from Entering the Experiment to Converting
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-4-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
 Everyone in the simulation is assigned a random number (based on a
 modified Gamma distribution) that represents the number of days that
@@ -258,7 +262,7 @@ Now, let's simulate a diminishing effect that the variant has on a
 person, based on the number of days it takes them to convert (if they do
 convert).
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 
 Here I'm simply taking the second half of a normal distribution (i.e.
 bell-curve) and modifying it to go from 100% to ~0% over 30 days, which
@@ -281,7 +285,7 @@ change.
 Now let's apply the "Percent of Lift Applied" to the Baseline Conversion
 Rate and the Lift in the Variant.
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-6-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
 This graph shows the conversion rate (i.e. probability used in the
 random draw from the binomial distribution) for each person according to
@@ -297,7 +301,7 @@ same rate as the baseline conversion rate (which is the same rate as the
 We can take our graph from above and show how the diminished effect
 influences the conversion rate of the people assigned to various days.
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
 **This is the key point**. The longer it takes people to convert, the
 less **lift** there is, and the more of these conversions you allow into
@@ -322,19 +326,40 @@ Update Conversion Rates, with Diminishing Lift
 So, let's look at the results of the A/B test with the updated
 conversion rates.
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-8-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-7-1.png)
 
 Including the people in the experiment that converted many days after
 they saw the experiment, seems to dilute the conversion rate. Again,
 more and more people are converting at the same conversion rate as the
 `A` group.
 
-Now, `B`'s conversion rate of `20.7%` is only a `3.20%` increase over
-the **true** baseline conversion rate of `20.0%`, and a `3.58%` increase
-over `A`'s conversion rate of `19.9%`, which hasn't changed since the
+Now, `B`'s conversion rate of `10.5%` is only a `4.87%` increase over
+the **true** baseline conversion rate of `10.0%`, and a `2.59%` increase
+over `A`'s conversion rate of `10.2%`, which hasn't changed since the
 last simulation.
 
-The P-value is no longer statistically significant: `0.0674334`
+The P-value is no longer statistically significant: `0.2069618`
+
+But, in truth, what we did above isn't exactly the same as running a
+test, shutting it off, and then analyzing the results. I ran the
+experiment for 30 days, but still gave people unlimited time to convert,
+as I haven't brought in the effects of attribution windows yet. So,
+let's examine what the p-values and lift look like over-time. We'll
+simulate running the experiment for 30 days (as I did above), but we'll
+allow an additional 14 days after the experiment for everyone to convert
+(so the people entering the experiment get 14 days). This is actually
+forcing an attribution window of varying degrees. It forces a 14-day
+attribution window for the people who entered the experiment on the last
+day, an 15-day attribution window for the people that enter the day
+before, and so on. I chose 14 days because I want to limit the effects
+of the attribution-window-like effect you would see if I chose a 2-day
+or 7-day window, like I will below.
+
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-11-1.png)
 
 Attribution Windows
 -------------------
@@ -344,23 +369,27 @@ So, we've seen the potential impact that diminishing lift can have.
 But so far, we haven't considered how we can use attribution windows, or
 if we should.
 
-Let's simulate a 7-day attribution window. In other word, we will only
-count conversion events that happen within 7 days from the day that the
+Let's simulate a 5-day attribution window. In other word, we will only
+count conversion events that happen within 5 days from the day that the
 person entered the experiment.
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-1.png)
 
-The P-value is once again statistically significant: `0.0015524`.
+The P-value is once again statistically significant: `0.0253603`.
 (Although, to be fair, it might not have been if we didn't have a
 sufficient sample size.)
 
 In this case, it appears we have reduced enough of the noise from the
 effects of the diminished lift and captured enough signal.
 
-Now, `B`'s conversion rate is only `10.7%` because we are only counting
+Now, `B`'s conversion rate is only `4.88%` because we are only counting
 the people who converted within 7-days from when they entered they
-experiment. But, it is a `9.02%` increase over `A`'s conversion rate of
-`9.71%`.
+experiment. But, it is a `6.86%` increase over `A`'s conversion rate of
+`4.55%`.
+
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-16-1.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-16-2.png)
 
 Conclusion
 ----------
@@ -393,44 +422,3 @@ and, therefore, on the required sample-sizes (i.e. lower conversion
 rates recognized from the attribution window may lead to larger
 sample-sizes required, but larger lifts detected may lead to smaller
 sample-sizes required).
-
-Appendix (WORK IN PROGRESS - PLEASE IGNORE FOR NOW)
-===================================================
-
-P-Values and Confidence Intervals, Over Time
---------------------------------------------
-
-What if we simulate p-value and conversion rate over time, with and
-without the attribution window?
-
-### No Attribution Window
-
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-1.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-2.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-3.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-4.png)
-
-### With Attribution Window
-
-    ## Warning: Removed 16 rows containing missing values (geom_path).
-
-    ## Warning: Removed 16 rows containing missing values (geom_point).
-
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-1.png)
-
-    ## Warning: Removed 8 rows containing missing values (geom_path).
-
-    ## Warning: Removed 8 rows containing missing values (geom_point).
-
-    ## Warning: Removed 8 rows containing missing values (geom_text).
-
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-2.png)
-
-    ## Warning: Removed 8 rows containing missing values (geom_path).
-
-    ## Warning: Removed 8 rows containing missing values (geom_text).
-
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-3.png)
-
-    ## Warning: Removed 8 rows containing missing values (geom_path).
-
-    ## Warning: Removed 8 rows containing missing values (geom_text).
-
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-4.png)
