@@ -1,5 +1,3 @@
-true
-
 A/B Tests, Diminishing Lift, & Attribution Windows
 ==================================================
 
@@ -37,7 +35,7 @@ the control. My assumption is that, despite the overall outperformance
 (i.e. the "lift") of the variant, the lift is highest in the first
 moments that it is seen by each person, and then decreases over time,
 such that the longer it takes the person to convert, the less impact
-that the variant had (relative to the control) on their conversion
+that the variant has (relative to the control) on their conversion
 decision. In other words, the variant has provided an **immediate lift**
 but the lift diminishes over time, such that the people in the `A` and
 `B` groups who are converting sometime in the future (say, at the
@@ -47,23 +45,23 @@ We can probably make similar statements for (perhaps) days, (mostly
 likely) weeks, and (certainly) months after the variation is seen.
 
 If true, obviously the rate (or distribution of) of diminishing lift and
-the time-period it takes to completely diminish depends on the
-product/experiment/target-market/etc..
+the time-period it takes for the lift to completely diminish depends on
+the product/experiment/target-market/etc..
 
 The concern is that, if a sub-population in our experiment (belonging to
 both the control group and the variant group) are converting at the same
-rates, **despite any immediate lift the variant has**, then when look at
-the results of the A/B test, those conversions are diluting, or masking,
-the immediate lift that the variant gives, and we might conclude that
-the variant has little or no effect. So, a contrived example would be:
-for a given experiment, the variant has a 7% statistically significant
-*immediate lift* (i.e. for the people who convert within, say, 2 days,
-the variant out-performs the control by a relative 7% increase in the
-conversion rate) but when looking at the entire population (let's say
-they have all been given a month to convert, and we analyze the results
-a month after the experiment ends), the lift is only 3% and not
-statistically significant. Is this type of contrived example realistic
-under some reasonable assumptions?+++
+rates, **despite the immediate lift the variant has**, then when we
+evaluate the results of the A/B test, those conversions are diluting, or
+masking, the immediate lift that the variant gives, and we might
+conclude that the variant has little or no effect. So, a contrived
+example would be: for a given experiment, the variant has a 7%
+statistically significant *immediate lift* (i.e. for the people who
+convert within, say, 2 days, the variant out-performs the control by a
+relative 7% increase in the conversion rate) but when looking at the
+entire population (let's say they have all been given a month to
+convert, and we analyze the results a month after the experiment ends),
+the lift is only 3% and not statistically significant. Is this type of
+contrived example realistic under some reasonable assumptions?+++
 
 So, the first question is: **How does the diminishing lift of the
 variant, over time, affect the outcome of the experiment?**
@@ -78,9 +76,8 @@ experiment was seen to the conversion date). The other assumption
 implied above was that this decrease was from the fact that, when
 grouping people by the amount of days it takes them to convert, the
 conversion rates of both groups start to converge as the lift from the
-variant diminishes. And the more conversions that we count that in the
-variant that have diminished lift, the more diluted the results
-became.++++
+variant diminishes. And the more conversions that we count that have
+diminished lift, the more diluted the results became.++++
 
 But, the typical process for A/B testing doesn't seem to consider/use an
 attribution windows at all: You run a test for, say, 30 days (depending
@@ -108,16 +105,14 @@ below will show up in *every* A/B test, it is only to show what is
 who either A) more susceptible to psychological manipulation (e.g. mind
 hacks, high pressure sales tactics, buying things based on whether it's
 sunny or dark outside, etc.) and/or B) wanting to make an immediately
-decision and/or C) impulsive buyers. At the very least, it seems like
-the target segment of A/B tests is the subpopulation of the target
-market that takes less time to make decisions and/or has a more
-immediate need. But, that's a direction I don't want to go right now.
-The caveat to this is that, there are of course experiments that you run
-where, for example, you've completely redesigned your product and that
-new experience does have a long-lasting impact on the customers'
-decision. In those cases, the lift is high enough that any concerns we
-deal with here are probably going to disappear from the large lift. I
-assume that's not the case for most A/B tests.*
+decision and/or C) impulsive buyers, and/or etc.. But, that's a
+direction I don't want to go right now. Of course, there caveat to this
+is that there are experiments you run where, for example, you've
+completely redesigned your product and the new experience does have a
+long-lasting impact on the customers' decision. In those cases, the lift
+is high enough that any concerns we deal with here are probably going to
+disappear from the large lift. I assume that's not the case for most A/B
+tests.*
 
 +++*It’s worth noting that, for this example, the overall lift of the
 variant on the entire population is, indeed, only 3%. My point is not
@@ -127,22 +122,22 @@ compared with others. So, are you trying to detect a 3% change to the
 entire population, or a 7% change of the population that is inherently
 more affected by A/B tests?*
 
-++++*An issue rated to note(+++) is the required sample size (and,
-therefore, duration) of the experiment in order to detect the lift, if
-it exists. There are two relevant trade-offs. One trade-off is that
-using a smaller attribution window leads to lower conversion rates (i.e.
-you are only counting a subset of conversions). All other things
-considered, a lower conversion rate requires a larger sample size. So,
-detecting a 5% change with a baseline conversion rate of 20% takes
-longer to test than with a baseline conversion rate of 30%. On the other
-hand, if you capture enough signal in the immediate lift (again, if it
-exists) and reduce a lot of the noise from the diminishing lift, a
-smaller attribution window will increase the lift found. So for example,
-the sample size required to detect a 3% change (from the control to the
-variant) is a lot larger than the sample size required to detect a 7%
-change. Therefore, in order to use attribution windows, the assumption
-is that these tradeoffs have to either balance out, or at least don’t
-affect the feasibility of running the A/B test.*
+++++*An issue rated to note(+++) is the sample size (and, therefore,
+duration) of the experiment required to detect the lift, if it exists.
+There are two relevant trade-offs. One trade-off is that using a smaller
+attribution window leads to lower conversion rates (i.e. you are only
+counting a subset of conversions). All other things considered, a lower
+conversion rate requires a larger sample size. So, detecting a 5% change
+with a baseline conversion rate of 20% takes longer to test than with a
+baseline conversion rate of 30%. On the other hand, if you capture
+enough signal in the immediate lift (again, if it exists) and reduce a
+lot of the noise from the diminishing lift, a smaller attribution window
+will increase the lift found. So for example, the sample size required
+to detect a 3% change (from the control to the variant) is a lot larger
+than the sample size required to detect a 7% change. Therefore, in order
+to use attribution windows, the assumption is that these tradeoffs have
+to either balance out, or at least don’t affect the feasibility of
+running the A/B test.*
 
 ------------------------------------------------------------------------
 
@@ -150,11 +145,11 @@ Simulate A/B Groups
 -------------------
 
 Let's simulate a 60-day experiment where ~`1,333` people enter the
-experiment daily, giving a total of about `80,000` are part of the
-experiment after 60 days.
+experiment daily, giving a total of about `80,000` trials during the
+60-day experiment.
 
 Then we'll randomly assign people into group `A` or group `B`, based on
-a random number generator, which will be roughly `40,000` per randomized
+a random number generator, which will be about `40,000` per randomized
 variation.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/create_traffic-1.png)
@@ -168,10 +163,10 @@ Now, we'll give everyone a baseline conversion rate of `10.0%`.
 
 Specifically, we'll assign each person a conversion rate (i.e.
 probability), then take a random sample from the binomial distribution
-using their probability to determine if that person converted.
+using their assigned probability to determine if that person converted.
 
-Let's simulate the conversion for each person and see the overall
-conversion rates for each variation.
+Let's simulate the conversion decision for each person and see the
+overall conversion rates for each variation.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/create_conversion_rate2-1.png)
 
@@ -187,7 +182,9 @@ equivalent to an `A`/`A` test.
 ### Simulate `7.00%` Increase in Group B
 
 Now, let's simulate everyone in the `B` group having a `7.00%` increase
-(due from the effects of the new variant we are testing out.)
+from the treatment effects of the new variant we are testing out. So
+`B`'s conversion rate is now `10.7%` (i.e. `10.0%` + (`10.0%` \*
+`7.00%`))
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-2-1.png)
 
@@ -231,8 +228,8 @@ We have to do 2 things.
 First, we have to **simulate people converting at different lengths of
 time, relative to when they saw the experiment**.
 
-Second, we have to **simulate the effect of the experiment diminishing
-over time**.
+Second, we have to **simulate the effect of the lift diminishing over
+time**.
 
 ### Simulate the Number of Days from Entering the Experiment to Converting
 
@@ -240,13 +237,17 @@ over time**.
 
 Everyone in the simulation is assigned a random number (based on a
 modified Gamma distribution) that represents the number of days that
-will take to convert **if they convert**. They are assigned the number
-before the binomial distribution determines if they convert. The reason
-for this is technical and intuitive. The technical reason is that the
-probability given to the binomial distribution will be based on the
-final probability assigned to the person which will be based on the
-number of days they are assigned and the diminishing effect calculated
-below. One intuitive reason (maybe a justification), is that this number
+will take to convert, **if they convert**.
+
+They are assigned the number before the binomial distribution determines
+if they convert. The reason for this is technical and intuitive.
+
+The technical reason is that the probability given to the binomial
+distribution will be based on the final probability assigned to the
+person, which will be based on the number of days they are assigned and
+the diminishing effect calculated below.
+
+One intuitive reason (maybe a justification), is that this number
 incorporates a lot of assumptions and characteristics about each person
 that we can't directly simulate: the buying impulse of the person, the
 degree of immediate need, the person's general thoughtfulness and
@@ -275,15 +276,16 @@ distribution), then that person will get the full effect of the lift of
 the variant (i.e. they will get `100%` (top of the curve) of the `7.00%`
 lift). On the other hand, if the person converts 30 days after seeing
 the experiment, they experience very little lift from the experiment
-(the lift is not quite `0%`, but close.)
+(the lift is not quite `0%`, but close).
 
 The rate of the diminishing effect of an experiment is large assumption
 of this simulation. This is my best guess at a reasonable rate, and
 depending on the product/service/experiment, this graph will certainly
 change.
 
-Now let's apply the "Percent of Lift Applied" to the Baseline Conversion
-Rate and the Lift in the Variant.
+Now let's apply the "Relative Effect" of the lift and show the
+conversion rates for each variation, according to how long it takes a
+person to convert.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
@@ -298,23 +300,23 @@ of the lift, and people who take a long time to convert, convert at the
 same rate as the baseline conversion rate (which is the same rate as the
 `A` group).
 
-We can take our graph from above and show how the diminished effect
+We can take our graph from above and show how the diminishing effect
 influences the conversion rate of the people assigned to various days.
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-6-1.png)
 
 **This is the key point**. The longer it takes people to convert, the
-less **lift** there is, and the more of these conversions you allow into
-your results, the more it will mask the immediate lift. The "immediate
-lift" is symbolized in the graph above with a light blue color in the
-`B` group.
+less **lift** there is, and the more conversions you allow into your
+results (from people who take longer to convert), the more it will mask
+the immediate lift. The "immediate lift" is visualized in the graph
+above with a light blue color in the `B` group.
 
 No such effect exists in the `A` group because they maintain the
 baseline conversion rate (there is no lift and nothing to diminish).
 
 **The people who convert &gt;= ~15 days from when they saw the variant,
 start to become much less affected by the variant and start to convert
-at the same rates as the control group.**
+at similar rates as the control group.**
 
 Another way of saying this is it's likely that the people who converted
 after 30 days were going to do so anyway, with or without the thing you
@@ -341,25 +343,55 @@ last simulation.
 The P-value is no longer statistically significant: `0.2069618`
 
 But, in truth, what we did above isn't exactly the same as running a
-test, shutting it off, and then analyzing the results. I ran the
-experiment for 30 days, but still gave people unlimited time to convert,
-as I haven't brought in the effects of attribution windows yet. So,
-let's examine what the p-values and lift look like over-time. We'll
-simulate running the experiment for 30 days (as I did above), but we'll
-allow an additional 14 days after the experiment for everyone to convert
-(so the people entering the experiment get 14 days). This is actually
-forcing an attribution window of varying degrees. It forces a 14-day
-attribution window for the people who entered the experiment on the last
-day, an 15-day attribution window for the people that enter the day
-before, and so on. I chose 14 days because I want to limit the effects
-of the attribution-window-like effect you would see if I chose a 2-day
-or 7-day window, like I will below.
+test, shutting it off, and then analyzing the results. I ran/simulated
+the experiment for `60` days, but still gave people unlimited time to
+convert, so that I could show a fair comparison against what we've
+previously done.
+
+What we might do, for example, is run a test for 60 days, shut off the
+test, and look at the results on that day. (Alternatively, we could have
+allowed everyone in the experiment an additional 7 days to convert, to
+give people at the end of the experiment a fair chance to convert. But
+we'll ignore this scenario, since it doesn't affect the main point.)
+
+Let's look at the conversion rates, p-values, and percent change (from
+A's conversion rate to B's conversion rate) over time. I'll show what
+the numbers would look like if we shut of the experiment at day `60`
+(brown dashed line) and day `90` (purple dashed line).
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-9-1.png)
+
+The phenomenon of the conversion rates starting at very low, and
+plateauing is from the fact that, of the ~`10.0%` or so people that will
+convert, only a fraction will do so on the first day; and as time goes
+on, you have the built up momentum from everyone that has previously
+entered into the experiment, starting to convert.
+
+The bump at the end of `90` days is because I only simulated `90` days
+of data. After `90` days, the number of trials (denominator) stops
+increasing, but the number of conversions keeps going up because our
+distribution of "days from entering experiment to converting" is over a
+duration of 30 days. This is the same effect you would see if you
+actually shut off your experiment on day `90` and still counted
+conversions (for the next 30 days).
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-10-1.png)
 
 ![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+
+You can see from the two graphs above that, **in this simulation**, the
+lower/diluted percent change between conversion rates i.e. lift
+(compared with the immediate lift of `7.00%`) is not large enough to be
+statistically significant, for all but a few instances during the
+experiment. It **appears** what is happening is we are not capturing
+enough of our signal, which seems to support the concern of diminishing
+lift.
+
+Please note that this exact effect is far from guaranteed, even if the
+concerns of diminishing lift are valid. For example, if the overall and
+immediate lift were higher, it's possible that even the diluated lift
+would still be statistically significant if there was a large enough
+effect and/or sample size.
 
 Attribution Windows
 -------------------
@@ -369,27 +401,53 @@ So, we've seen the potential impact that diminishing lift can have.
 But so far, we haven't considered how we can use attribution windows, or
 if we should.
 
-Let's simulate a 5-day attribution window. In other word, we will only
+Let's simulate a `5`-day attribution window. In other word, we will only
 count conversion events that happen within 5 days from the day that the
 person entered the experiment.
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-12-1.png)
 
 The P-value is once again statistically significant: `0.0253603`.
 (Although, to be fair, it might not have been if we didn't have a
-sufficient sample size.)
+sufficient sample size.) Because we are using a `5` day attribution
+window, this is the p-value you would get if you were to shut of the
+test and wait `5` days for the rest of the potential conversions to
+accumulate.
 
 In this case, it appears we have reduced enough of the noise from the
 effects of the diminished lift and captured enough signal.
 
-Now, `B`'s conversion rate is only `4.88%` because we are only counting
-the people who converted within 7-days from when they entered they
-experiment. But, it is a `6.86%` increase over `A`'s conversion rate of
-`4.55%`.
+Now, `B`'s conversion rate is only `4.88%` (and is much smaller than the
+"true" conversion rate) because we are only counting the people who
+converted within `5` days from when they entered they experiment. But,
+it is a `6.86%` increase over `A`'s conversion rate of `4.55%`.
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
-![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-16-1.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-16-2.png)
+Notice that, because we are using an attribution window, our conversion
+rate **trend** is much more stable over time. Notice that information
+doesn't start showing up until day `6`, because we have to allow
+everyone `5` to convert. Therefore, unlike the conversion rates (and
+p-values, etc.) over time, above, here each increase in the denominator
+is paired with it's conversion (or non-conversion).
+
+![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-1.png)![](attribution-window-simulation_files/figure-markdown_strict/unnamed-chunk-15-2.png)
+
+Again, **in this simulation**, the use of attribution windows allows us
+to extract more of the signal and, aside from the start of the
+experiment (which is expected), and a few sporatic days throughout, we
+now see that the result is statistically significant. Even though the
+attribution window decreases the **absolute** conversion rate we use,
+**in this case**, it increases the **percent change** in conversion
+rates. So at a smaller conversion rate, we see (and can detect) a larger
+effect.
+
+As noted in the last section, this exact effect is far from guaranteed,
+even if the proposal of an attribution window is valid. For example,
+it's possible that the chosen attribution window wouldn't capture enough
+signal, and even if it captured most of the expected immediate lift,
+it's possible the absolute conversion rates would be so low that the
+sample size required to detect the effect wouldn't be large enough.
 
 Conclusion
 ----------
